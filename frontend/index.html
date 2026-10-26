@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FleetFlow NG — Logistics Management</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="bg-slate-50 font-sans">
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-blue-900 to-blue-600 text-white shadow-md">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center font-bold">FF</div>
+        <div>
+          <h1 class="font-bold text-lg leading-tight">FleetFlow NG</h1>
+          <p class="text-[10px] text-blue-200">🇳🇬 Nigeria Logistics Suite</p>
+        </div>
+      </div>
+      <nav class="hidden md:flex gap-1 text-sm">
+        <button class="nav-btn" data-page="dashboard">Dashboard</button>
+        <button class="nav-btn" data-page="vehicles">Vehicles</button>
+        <button class="nav-btn" data-page="maintenance">Maintenance</button>
+        <button class="nav-btn" data-page="comms">Comms</button>
+        <button class="nav-btn" data-page="eld">ELD</button>
+        <button class="nav-btn" data-page="subscription">Subscription</button>
+      </nav>
+      <div class="text-xs text-blue-200 hidden sm:block">© 2026 Ifesinachi John Nduka</div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="max-w-7xl mx-auto px-4 py-6" id="main">
+    <div id="page-dashboard" class="page active">
+      <h2 class="text-xl font-bold text-blue-900 mb-4">Dashboard</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6" id="stats"></div>
+      <div class="bg-white rounded-xl shadow p-5">
+        <h3 class="font-bold text-blue-900 mb-3">Predictive Maintenance Alerts</h3>
+        <div id="predictions" class="space-y-2 text-sm text-slate-600">Loading…</div>
+      </div>
+    </div>
+
+    <div id="page-vehicles" class="page hidden">
+      <h2 class="text-xl font-bold text-blue-900 mb-4">Vehicles</h2>
+      <div class="bg-white rounded-xl shadow overflow-hidden">
+        <table class="w-full text-sm">
+          <thead class="bg-blue-50 text-blue-800 text-xs uppercase">
+            <tr>
+              <th class="p-3 text-left">Plate</th>
+              <th class="p-3 text-left">Model</th>
+              <th class="p-3 text-left">Status</th>
+              <th class="p-3 text-left">Odometer</th>
+              <th class="p-3 text-left">Fuel</th>
+            </tr>
+          </thead>
+          <tbody id="vehicleRows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="page-maintenance" class="page hidden">
+      <h2 class="text-xl font-bold text-blue-900 mb-4">Maintenance Tracker</h2>
+      <div class="bg-white rounded-xl shadow p-5">
+        <div id="maintenanceList" class="space-y-2 text-sm">Loading…</div>
+      </div>
+    </div>
+
+    <div id="page-comms" class="page hidden">
+      <h2 class="text-xl font-bold text-blue-900 mb-4">Driver ↔ Office Comms</h2>
+      <div class="bg-white rounded-xl shadow p-4 flex flex-col h-[480px]">
+        <div id="chatLog" class="flex-1 overflow-y-auto space-y-2 text-sm mb-3"></div>
+        <div class="flex gap-2">
+          <input id="chatInput" type="text" placeholder="Type message…" class="flex-1 border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-400" />
+          <button id="sendBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="page-eld" class="page hidden">
+      <h2 class="text-xl font-bold text-blue-900 mb-4">ELD Data Analyzer</h2>
+      <div id="eldStats" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4"></div>
+      <div class="bg-white rounded-xl shadow p-5">
+        <h3 class="font-bold text-blue-900 mb-3">Route Optimization</h3>
+        <div id="routes" class="space-y-2 text-sm">Loading…</div>
+      </div>
+    </div>
+
+    <div id="page-subscription" class="page hidden">
+      <h2 class="text-xl font-bold text-blue-900 mb-4">Subscription</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="plans"></div>
+    </div>
+  </main>
+
+  <footer class="text-center text-xs text-slate-500 py-6 border-t mt-10">
+    FleetFlow NG • Developed by <strong>Ifesinachi John Nduka</strong> • © 2026 All Rights Reserved
+  </footer>
+
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/vehicles.js"></script>
+  <script src="js/maintenance.js"></script>
+  <script src="js/comms.js"></script>
+  <script src="js/eld.js"></script>
+  <script src="js/subscription.js"></script>
+</body>
+</html>

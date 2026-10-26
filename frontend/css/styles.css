@@ -1,0 +1,48 @@
+/* FleetFlow NG — Royal Blue Theme */
+:root {
+  --royal-900: #0a1628;
+  --royal-800: #122240;
+  --royal-700: #1a365d;
+  --royal-600: #1e4a7a;
+  --royal-500: #2563a0;
+  --royal-400: #3b82c4;
+  --royal-100: #bfdbf2;
+  --gold: #d4a843;
+}
+
+body { font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif; }
+
+.nav-btn {
+  padding: 6px 12px;
+  border-radius: 8px;
+  color: #cbd5e1;
+  transition: all 0.2s;
+}
+.nav-btn:hover { background: rgba(255,255,255,0.1); color: white; }
+.nav-btn.active { background: white; color: var(--royal-700); font-weight: 600; }
+
+.page { animation: fadeUp 0.3s ease-out; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.chat-bubble-sent {
+  background: var(--royal-600); color: white;
+  padding: 8px 14px; border-radius: 14px 14px 4px 14px;
+  max-width: 75%; align-self: flex-end; margin-left: auto;
+}
+.chat-bubble-received {
+  background: #f1f5f9; color: #1e293b;
+  padding: 8px 14px; border-radius: 14px 14px 14px 4px;
+  max-width: 75%;
+}
+body::after {
+  content: "© 2026 Ifesinachi John Nduka — All Rights Reserved";
+  position: fixed;
+  bottom: 4px;
+  right: 8px;
+  font-size: 9px;
+  color: #94a3b8;
+  pointer-events: none;
+}

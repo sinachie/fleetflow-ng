@@ -1,0 +1,61 @@
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const http = require('http');
+const { Server } = require('socket.io');
+const connectDB = require('./config/db');
+
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, { cors: { origin: '*' } });
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Health check
+app.get('/', (_req, res) =>
+  res.json({
+    name: 'FleetFlow NG API',
+    developer: 'Ifesinachi John Nduka',
+    copyright: '© 2026 All Rights Reserved',
+    status: 'ok',
+  })
+);
+
+// Routes
+app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/vehicles', require('./routes/vehicleRoutes'));
+app.use('/api/maintenance', require('./routes/maintenanceRoutes'));
+app.use('/api/messages', require('./routes/messageRoutes'));
+app.use('/api/eld', require('./routes/eldRoutes'));
+app.use('/api/subscriptions', require('./routes/subscriptionRoutes'));
+
+// Socket.IO — real-time driver↔office comms
+io.on('connection', (socket) => {
+  console.log('🔌 Client connected:', socket.id);
+
+  socket.on('chat:message', (payload) => {
+    // Broadcast to everyone in room (simple; swap for per-company rooms)
+    io.emit('chat:message', payload);
+  });
+
+  socket.on('disconnect', () => console.log('❌ Disconnected:', socket.id));
+});
+
+// Error handler
+app.use((err, _req, res, _next) => {
+  console.error(err);
+  res.status(500).json({ message: 'Server error', error: err.message });
+});
+
+const PORT = process.env.PORT || 5000;
+
+(async () => {
+  await connectDB();
+  server.listen(PORT, () => {
+    console.log(`🚀 FleetFlow NG API running on port ${PORT}`);
+    console.log('👨‍💻 Developer: Ifesinachi John Nduka');
+    console.log('© 2026 All Rights Reserved');
+  });
+})();

@@ -1,0 +1,13 @@
+{
+  "name": "fleetflow-ng",
+  "version": "1.0.0",
+  "description": "Enterprise logistics fleet management — Nigeria",
+  "author": "Ifesinachi John Nduka",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "start": "cd backend && npm start",
+    "dev": "cd backend && npm run dev",
+    "install-all": "cd backend && npm install"
+  }
+}
