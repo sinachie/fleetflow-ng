@@ -41,7 +41,15 @@ const io = new Server(server, {
 
 // 5. NOW apply Helmet, JSON parsing, and Rate Limiting
 app.use(helmet());
-app.use(express.json());
+
+// Parse JSON for all routes EXCEPT the webhook
+app.use((req, res, next) => {
+  if (req.originalUrl === '/api/subscriptions/webhook') {
+    next(); // Skip JSON parsing for webhooks
+  } else {
+    express.json()(req, res, next);
+  }
+});
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
