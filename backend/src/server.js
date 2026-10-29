@@ -18,9 +18,16 @@ const allowedOrigins = [
   'https://www.fleetflow.com.ng',
   'https://fleetflow-ng-frontend.vercel.app',
   process.env.CLIENT_URL
-].filter(Boolean); // Removes undefined values
+].filter(Boolean);
 
-// 2. Setup Socket.IO with CORS
+// 2. CORS MUST BE FIRST (This is the fix!)
+app.use(cors({ 
+  origin: allowedOrigins, 
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'] // Added OPTIONS here
+}));
+
+// 3. Setup Socket.IO
 const io = new Server(server, {
   cors: {
     origin: allowedOrigins,
@@ -28,15 +35,14 @@ const io = new Server(server, {
   }
 });
 
-// 3. Setup Express CORS & Security
-app.use(cors({ origin: allowedOrigins, credentials: true }));
+// 4. Security and Parsing
 app.use(helmet());
 app.use(express.json());
 
-// 4. Rate Limiting
+// 5. Rate Limiting (Come AFTER CORS)
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 200, // Increased to 200 so testing doesn't block you
+  max: 200, 
   message: 'Too many requests from this IP, please try again later.',
 });
 app.use('/api', limiter);
