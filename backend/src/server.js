@@ -16,21 +16,22 @@ const allowedOrigins = [
   'http://127.0.0.1:5000',
   'https://fleetflow.com.ng',
   'https://www.fleetflow.com.ng',
-  'https://fleetflow-ng-frontend.vercel.app',
-  process.env.CLIENT_URL
-].filter(Boolean);
+  'https://fleetflow-ng-frontend.vercel.app'
+];
 
-// 2. CORS MUST BE FIRST
-app.use(cors({
+// 2. CORS MUST BE FIRST (This is the absolute priority)
+const corsOptions = {
   origin: allowedOrigins,
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'] // Include OPTIONS
-}));
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'] // Explicitly allow OPTIONS
+};
 
-// 3. Handle preflight requests explicitly (before rate limiter)
-app.options('*', cors());
+app.use(cors(corsOptions));
 
-// 4. Setup Socket.IO with CORS
+// 3. Explicitly handle preflight requests BEFORE any other middleware
+app.options('*', cors(corsOptions)); 
+
+// 4. Setup Socket.IO
 const io = new Server(server, {
   cors: {
     origin: allowedOrigins,
@@ -38,11 +39,10 @@ const io = new Server(server, {
   }
 });
 
-// 5. Security and Parsing
+// 5. NOW apply Helmet, JSON parsing, and Rate Limiting
 app.use(helmet());
 app.use(express.json());
 
-// 6. Rate Limiting (MUST COME AFTER CORS)
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 200,
