@@ -8,22 +8,38 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 
 const app = express();
-app.use(cors());
-// Security Middleware
-app.use(helmet());
+const server = http.createServer(app);
 
-// Rate Limiting
+// 1. Define allowed origins
+const allowedOrigins = [
+  'http://localhost:5000',
+  'http://127.0.0.1:5000',
+  'https://fleetflow.com.ng',
+  'https://www.fleetflow.com.ng',
+  'https://fleetflow-ng-frontend.vercel.app',
+  process.env.CLIENT_URL
+].filter(Boolean); // Removes undefined values
+
+// 2. Setup Socket.IO with CORS
+const io = new Server(server, {
+  cors: {
+    origin: allowedOrigins,
+    methods: ['GET', 'POST']
+  }
+});
+
+// 3. Setup Express CORS & Security
+app.use(cors({ origin: allowedOrigins, credentials: true }));
+app.use(helmet());
+app.use(express.json());
+
+// 4. Rate Limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per window
+  windowMs: 15 * 60 * 1000,
+  max: 200, // Increased to 200 so testing doesn't block you
   message: 'Too many requests from this IP, please try again later.',
 });
-app.use('/api', limiter); // Apply to all API routes
-const server = http.createServer(app);
-const io = new Server(server, { cors: { origin: '*' } });
-
-// Middleware
-app.use(express.json());
+app.use('/api', limiter);
 
 // Health check
 app.get('/', (_req, res) =>
@@ -35,7 +51,7 @@ app.get('/', (_req, res) =>
   })
 );
 
-// Routes
+// Routes (Keep your existing routes)
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/vehicles', require('./routes/vehicleRoutes'));
 app.use('/api/maintenance', require('./routes/maintenanceRoutes'));
@@ -43,12 +59,12 @@ app.use('/api/messages', require('./routes/messageRoutes'));
 app.use('/api/eld', require('./routes/eldRoutes'));
 app.use('/api/subscriptions', require('./routes/subscriptionRoutes'));
 
-// Socket.IO — real-time driver↔office comms
+// 5. Socket.IO Real-Time Logic
 io.on('connection', (socket) => {
   console.log('🔌 Client connected:', socket.id);
 
   socket.on('chat:message', (payload) => {
-    // Broadcast to everyone in room (simple; swap for per-company rooms)
+    // Broadcast the message to everyone connected
     io.emit('chat:message', payload);
   });
 
