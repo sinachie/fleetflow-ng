@@ -1,36 +1,39 @@
-// Real-time chat via Socket.IO — falls back to REST if socket fails.
 document.addEventListener('DOMContentLoaded', () => {
   const log = document.getElementById('chatLog');
   const input = document.getElementById('chatInput');
   const btn = document.getElementById('sendBtn');
 
-  const socketUrl = window.location.hostname === 'localhost'
-    ? 'http://localhost:5000'
-    : window.location.origin;
+  // Connect to Socket.IO on Render
+  const socketUrl = 'https://fleetflow-backend-bmvz.onrender.com';
+  const socket = io(socketUrl, { transports: ['websocket', 'polling'] });
 
-  let socket;
-  try {
-    socket = io(socketUrl, { transports: ['websocket', 'polling'] });
-    socket.on('connect', () => console.log('🟢 Comms connected'));
-    socket.on('chat:message', (payload) => appendMessage(payload, 'received'));
-  } catch (e) {
-    console.warn('Socket not available, using REST only');
-  }
+  socket.on('connect', () => console.log('🟢 Comms connected'));
 
-  function appendMessage(payload, direction) {
+  // Listen for incoming messages
+  socket.on('chat:message', (payload) => {
     const div = document.createElement('div');
-    div.className = direction === 'sent' ? 'chat-bubble-sent' : 'chat-bubble-received';
+    div.className = 'chat-bubble-received';
     div.innerHTML = `<p class="text-[10px] opacity-70 mb-1">${payload.author || 'Driver'}</p>${payload.body}`;
     log.appendChild(div);
     log.scrollTop = log.scrollHeight;
-  }
+  });
 
+  // Send message
   function send() {
     const body = input.value.trim();
     if (!body) return;
+
     const payload = { author: 'Office', body, at: new Date().toISOString() };
-    appendMessage(payload, 'sent');
-    socket?.emit('chat:message', payload);
+
+    // Add to own screen instantly
+    const div = document.createElement('div');
+    div.className = 'chat-bubble-sent';
+    div.innerHTML = `<p class="text-[10px] opacity-70 mb-1">${payload.author}</p>${payload.body}`;
+    log.appendChild(div);
+    log.scrollTop = log.scrollHeight;
+
+    // Send to server (which broadcasts to everyone else)
+    socket.emit('chat:message', payload);
     input.value = '';
   }
 
