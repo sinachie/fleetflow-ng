@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         <h3 class="font-bold text-blue-900">${labels[plan]}</h3>
         <p class="text-2xl font-bold text-blue-800 mt-2">₦${cycles.yearly.toLocaleString()}</p>
         <p class="text-xs text-slate-500">/ year (or ₦${cycles.monthly.toLocaleString()} / month)</p>
-        <!-- We pass 'this' so we can target the exact button clicked -->
         <button onclick="subscribe('${plan}', 'yearly', this)" class="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-sm font-semibold">Choose ${labels[plan]}</button>
       </div>
     `).join('');
@@ -20,7 +19,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
-// We add 'btn' as the third parameter to prevent the 'event.target' error
 async function subscribe(plan, billingCycle, btn) {
   try {
     const email = prompt('Enter your email address for the receipt:');
@@ -28,12 +26,10 @@ async function subscribe(plan, billingCycle, btn) {
     
     const company = prompt('Company name for subscription:') || 'Demo Co.';
 
-    // Show loading state safely
     const originalText = btn.innerText;
     btn.innerText = 'Processing...';
     btn.disabled = true;
 
-    // 1. Get the secure checkout URL from our backend
     const response = await Api.post('/subscriptions/initialize', {
       company,
       email,
@@ -41,7 +37,6 @@ async function subscribe(plan, billingCycle, btn) {
       billingCycle,
     });
 
-    // 2. Redirect the user to Paystack to pay
     if (response.authorization_url) {
       window.location.href = response.authorization_url;
     } else {
@@ -50,7 +45,6 @@ async function subscribe(plan, billingCycle, btn) {
 
   } catch (e) {
     alert(`❌ ${e.message}`);
-    // Restore button if it fails
     btn.innerText = 'Choose Plan';
     btn.disabled = false;
   }
