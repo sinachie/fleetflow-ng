@@ -20,14 +20,17 @@ const allowedOrigins = [
   process.env.CLIENT_URL
 ].filter(Boolean);
 
-// 2. CORS MUST BE FIRST (This is the fix!)
-app.use(cors({ 
-  origin: allowedOrigins, 
+// 2. CORS MUST BE FIRST
+app.use(cors({
+  origin: allowedOrigins,
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'] // Added OPTIONS here
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'] // Include OPTIONS
 }));
 
-// 3. Setup Socket.IO
+// 3. Handle preflight requests explicitly (before rate limiter)
+app.options('*', cors());
+
+// 4. Setup Socket.IO with CORS
 const io = new Server(server, {
   cors: {
     origin: allowedOrigins,
@@ -35,14 +38,14 @@ const io = new Server(server, {
   }
 });
 
-// 4. Security and Parsing
+// 5. Security and Parsing
 app.use(helmet());
 app.use(express.json());
 
-// 5. Rate Limiting (Come AFTER CORS)
+// 6. Rate Limiting (MUST COME AFTER CORS)
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 200, 
+  max: 200,
   message: 'Too many requests from this IP, please try again later.',
 });
 app.use('/api', limiter);
