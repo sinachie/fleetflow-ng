@@ -8,7 +8,7 @@ const {
 const { protect } = require('../middleware/auth');
 
 router.get('/plans', listPlans);
-router.get('/', protect, listSubscriptions);
+router.get('/', listSubscriptions);
 router.post('/', protect, createSubscription);
 
 module.exports = router;
