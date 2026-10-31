@@ -12,6 +12,8 @@ exports.listPlans = (_req, res) => {
 };
 
 // 1. INITIALIZE PAYMENT (Called by Frontend)
+const axios = require('axios'); // Add this at the top of the file
+
 exports.initializePayment = async (req, res) => {
   try {
     const { company, email, plan, billingCycle } = req.body;
@@ -20,36 +22,40 @@ exports.initializePayment = async (req, res) => {
     const amount = PRICES[plan][billingCycle];
     if (!amount) return res.status(400).json({ message: 'Invalid billing cycle' });
 
-    // Paystack expects amount in Kobo (multiply by 100)
     const amountInKobo = amount * 100;
 
-    // Call Paystack API to initialize transaction
-    const response = await fetch('https://api.paystack.co/transaction/initialize', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: email || 'customer@fleetflow.com.ng', // Paystack requires an email
+    // Call Paystack API using Axios
+    const response = await axios.post(
+      'https://api.paystack.co/transaction/initialize',
+      {
+        email: email || 'customer@fleetflow.com.ng',
         amount: amountInKobo,
         metadata: {
           company,
           plan,
           billingCycle,
+          userId: req.user ? req.user._id : null // In case you temporarily removed protect
         },
-      }),
-    });
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
 
-    const data = await response.json();
+    const data = response.data;
 
     if (!data.status) {
       return res.status(400).json({ message: 'Paystack initialization failed', error: data.message });
     }
 
-    // Return the secure checkout URL to the frontend
     res.json({ authorization_url: data.data.authorization_url, reference: data.data.reference });
+    
   } catch (err) {
+    // This will print the EXACT reason Paystack rejected it in your Render logs
+    console.error('Paystack Error:', err.response ? err.response.data : err.message);
     res.status(500).json({ message: err.message });
   }
 };
