@@ -1,19 +1,18 @@
 const express = require('express');
 const router = express.Router();
-const {
-  listPlans,
-  createSubscription,
-  listSubscriptions,
-  initializePayment, // <-- New
-  paystackWebhook,   // <-- New
+const { 
+  listPlans, 
+  initializePayment, 
+  paystackWebhook, 
+  getMySubscription, 
+  cancelSubscription 
 } = require('../controllers/subscriptionController');
 const { protect } = require('../middleware/auth');
 
 router.get('/plans', listPlans);
-router.get('/', protect, listSubscriptions);
+router.post('/initialize', protect, initializePayment);
+router.post('/webhook', paystackWebhook);
 
-// New routes
-router.post('/initialize', protect, initializePayment); 
-router.post('/webhook', paystackWebhook); // Note: No 'protect' here. Paystack can't send JWT tokens!
-
-module.exports = router;
+// Billing Portal Routes
+router.get('/my-plan', protect, getMySubscription);
+router.post('/cancel', protect, cancelSubscription);

@@ -42,6 +42,7 @@
       <button class="nav-btn" data-page="comms">Comms</button>
       <button class="nav-btn" data-page="eld">ELD</button>
       <button class="nav-btn" data-page="subscription">Subscription</button>
+      <button class="nav-btn" data-page="billing">Billing</button>
     </nav>
   </div>
 
@@ -53,6 +54,7 @@
     <button class="nav-btn text-left w-full" data-page="comms">Comms</button>
     <button class="nav-btn text-left w-full" data-page="eld">ELD</button>
     <button class="nav-btn text-left w-full" data-page="subscription">Subscription</button>
+    <button class="nav-btn text-left w-full" data-page="billing">Billing</button>
   </div>
 </header>
 
@@ -116,6 +118,14 @@
       <h2 class="text-xl font-bold text-blue-900 mb-4">Subscription</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="plans"></div>
     </div>
+
+    <div id="page-billing" class="page hidden">
+  <h2 class="text-xl font-bold text-blue-900 mb-4">Billing & Account Management</h2>
+  
+  <div id="billingContent" class="bg-white rounded-xl shadow p-6">
+    <p class="text-slate-500">Loading billing details...</p>
+  </div>
+  </div>
   </main>
 
   <footer class="text-center text-xs text-slate-500 py-6 border-t mt-10">
@@ -131,5 +141,6 @@
   <script src="js/comms.js"></script>
   <script src="js/eld.js"></script>
   <script src="js/subscription.js"></script>
+  <script src="js/billing.js"></script>
 </body>
 </html>

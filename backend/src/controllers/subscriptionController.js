@@ -82,14 +82,18 @@ exports.paystackWebhook = async (req, res) => {
         renewsAt.setFullYear(renewsAt.getFullYear() + 1);
       }
 
+      // Inside paystackWebhook -> if (event.event === 'charge.success') { ... }
+
       await Subscription.create({
+        user: event.data.metadata.userId, // We will pass this from the frontend
         company: metadata.company,
         plan: metadata.plan,
         billingCycle: metadata.billingCycle,
-        amountNGN: event.data.amount / 100, // Convert back from Kobo
+        amountNGN: event.data.amount / 100,
         status: 'active',
         renewsAt,
         paystackRef: reference,
+        paystackAuthCode: event.data.authorization.authorization_code // <-- Save the card!
       });
 
       console.log(`✅ Payment successful for ${metadata.company} - Ref: ${reference}`);
@@ -107,6 +111,33 @@ exports.listSubscriptions = async (_req, res) => {
   try {
     const subs = await Subscription.find().sort({ createdAt: -1 });
     res.json(subs);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Get the current user's active subscription
+exports.getMySubscription = async (req, res) => {
+  try {
+    const sub = await Subscription.findOne({ user: req.user._id, status: 'active' });
+    if (!sub) return res.status(404).json({ message: 'No active subscription found' });
+    res.json(sub);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Cancel a subscription
+exports.cancelSubscription = async (req, res) => {
+  try {
+    const sub = await Subscription.findOne({ user: req.user._id, status: 'active' });
+    if (!sub) return res.status(404).json({ message: 'No active subscription' });
+    
+    // In a real app, you might call Paystack to disable the plan here.
+    sub.status = 'cancelled';
+    await sub.save();
+    
+    res.json({ message: 'Subscription cancelled successfully' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
