@@ -1,4 +1,3 @@
-// Central API helper. Change API_BASE in production.
 const API_BASE = window.location.hostname === 'localhost' 
   ? 'http://localhost:5000/api' 
   : 'https://fleetflow-backend-bmvz.onrender.com/api';

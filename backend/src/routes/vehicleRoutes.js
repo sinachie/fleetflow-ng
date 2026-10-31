@@ -10,7 +10,7 @@ const {
 const { protect, authorize } = require('../middleware/auth');
 
 router.route('/')
-  .get(listVehicles)
+  .get(protect, listVehicles)
   .post(protect, authorize('admin', 'manager'), createVehicle);
 
 router.route('/:id')
