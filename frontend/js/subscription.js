@@ -54,48 +54,29 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
-// 4. The subscribe function (FIXED)
+// 4. The subscribe function 
 async function subscribe(plan, billingCycle, btn) {
   try {
-    // Get user from localStorage (assuming they are logged in)
-    const userStr = localStorage.getItem('ff_user');
-    const user = userStr ? JSON.parse(userStr) : null;
+    // ... (your existing code to get user/email/company) ...
 
-    // Declare email and company ONCE
-    let email;
-    let company;
-
-    if (user) {
-      // If logged in, use their stored data
-      email = user.email;
-      company = user.company || 'FleetFlow User';
-    } else {
-      // If not logged in, ask them
-      email = prompt('Enter your email address for the receipt:');
-      if (!email) return;
-      company = prompt('Company name for subscription:') || 'Demo Co.';
-    }
-
-    // Show loading state
     btn.innerText = 'Processing...';
     btn.disabled = true;
 
     const response = await Api.post('/subscriptions/initialize', {
-      company,
-      email,
-      plan,
-      billingCycle,
-      userId: user ? user.id : null // Pass user ID if they exist
+      company, email, plan, billingCycle, 
+      userId: user ? user.id : null 
     });
 
     if (response.authorization_url) {
-      window.location.href = response.authorization_url;
+      window.location.href = response.authorization_url; // Redirect to Paystack
     } else {
       throw new Error('No checkout URL returned');
     }
 
   } catch (e) {
-    alert(`❌ ${e.message}`);
+    alert(`❌ Error: ${e.message}`);
+  } finally {
+    // This ALWAYS runs, so the button never stays stuck!
     btn.innerText = 'Choose Plan';
     btn.disabled = false;
   }

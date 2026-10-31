@@ -70,10 +70,10 @@ app.get('/', (_req, res) =>
 
 // Routes (Keep your existing routes)
 app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/vehicles', require('./routes/vehicleRoutes'));
 app.use('/api/maintenance', require('./routes/maintenanceRoutes'));
 app.use('/api/messages', require('./routes/messageRoutes'));
 app.use('/api/eld', require('./routes/eldRoutes'));
+app.use('/api/vehicles', require('./routes/vehicleRoutes'));
 app.use('/api/subscriptions', require('./routes/subscriptionRoutes'));
 
 // 5. Socket.IO Real-Time Logic

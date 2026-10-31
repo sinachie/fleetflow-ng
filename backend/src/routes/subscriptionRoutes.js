@@ -16,3 +16,5 @@ router.post('/webhook', paystackWebhook);
 // Billing Portal Routes
 router.get('/my-plan', protect, getMySubscription);
 router.post('/cancel', protect, cancelSubscription);
+
+module.exports = router; 
