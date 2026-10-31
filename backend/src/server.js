@@ -81,9 +81,9 @@ io.on('connection', (socket) => {
   console.log('🔌 Client connected:', socket.id);
 
   socket.on('chat:message', (payload) => {
-    // Broadcast the message to everyone connected
-    io.emit('chat:message', payload);
-  });
+  // Broadcast to everyone EXCEPT the sender
+  socket.broadcast.emit('chat:message', payload);
+});
 
   socket.on('disconnect', () => console.log('❌ Disconnected:', socket.id));
 });
