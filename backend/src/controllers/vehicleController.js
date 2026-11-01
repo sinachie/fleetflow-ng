@@ -72,10 +72,10 @@ exports.deleteVehicle = async (req, res) => {
 };
 
 // EXPORTS
-module.exports = {
-  listVehicles,
-  createVehicle,
-  getVehicle,
-  updateVehicle,
-  deleteVehicle
-};
+//module.exports = {
+ // listVehicles,
+  //createVehicle,
+  //getVehicle,
+  //updateVehicle,
+  //deleteVehicle
+//};
