@@ -57,18 +57,39 @@ document.addEventListener('DOMContentLoaded', async () => {
 // 4. The subscribe function 
 async function subscribe(plan, billingCycle, btn) {
   try {
-    // ... (your existing code to get user/email/company) ...
+    // 1. Check if the user is logged in
+    const userStr = localStorage.getItem('ff_user');
+    const user = userStr ? JSON.parse(userStr) : null;
 
+    let email;
+    let company;
+
+    // 2. Get user details
+    if (user) {
+      email = user.email;
+      company = user.company || 'FleetFlow User';
+    } else {
+      email = prompt('Enter your email address for the receipt:');
+      if (!email) return;
+      company = prompt('Company name for subscription:') || 'Demo Co.';
+    }
+
+    // 3. Show loading state
     btn.innerText = 'Processing...';
     btn.disabled = true;
 
+    // 4. Send to backend
     const response = await Api.post('/subscriptions/initialize', {
-      company, email, plan, billingCycle, 
-      userId: user ? user.id : null 
+      company,
+      email,
+      plan,
+      billingCycle,
+      userId: user ? user.id : null
     });
 
+    // 5. Redirect to Paystack
     if (response.authorization_url) {
-      window.location.href = response.authorization_url; // Redirect to Paystack
+      window.location.href = response.authorization_url;
     } else {
       throw new Error('No checkout URL returned');
     }
@@ -76,7 +97,7 @@ async function subscribe(plan, billingCycle, btn) {
   } catch (e) {
     alert(`❌ Error: ${e.message}`);
   } finally {
-    // This ALWAYS runs, so the button never stays stuck!
+    // This ensures the button never gets stuck on "Processing..."
     btn.innerText = 'Choose Plan';
     btn.disabled = false;
   }
