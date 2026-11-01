@@ -1,7 +1,7 @@
 const Vehicle = require('../models/Vehicle');
 const Subscription = require('../models/Subscription');
 
-// 1. Create Vehicle
+// 1. Create Vehicle (With Plan Limits)
 exports.createVehicle = async (req, res) => {
   try {
     const sub = await Subscription.findOne({ user: req.user._id, status: 'active' });
@@ -71,7 +71,6 @@ exports.deleteVehicle = async (req, res) => {
   }
 };
 
-// EXPORTS
 module.exports = {
   listVehicles,
   createVehicle,
