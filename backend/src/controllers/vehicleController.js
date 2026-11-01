@@ -1,27 +1,23 @@
 const Vehicle = require('../models/Vehicle');
 const Subscription = require('../models/Subscription');
 
-// 1. Create Vehicle (With Plan Limits)
+// 1. Create Vehicle
 exports.createVehicle = async (req, res) => {
   try {
-    // Check if the user has an active subscription
     const sub = await Subscription.findOne({ user: req.user._id, status: 'active' });
     if (!sub) {
       return res.status(403).json({ message: 'You need an active subscription to add vehicles.' });
     }
 
-    // Count how many vehicles this specific user has added
     const vehicleCount = await Vehicle.countDocuments({ owner: req.user._id });
 
-    // Enforce Plan Limits
     if (sub.plan === 'starter' && vehicleCount >= 5) {
-      return res.status(403).json({ message: 'Starter plan limited to 5 vehicles. Please upgrade to Professional.' });
+      return res.status(403).json({ message: 'Starter plan limited to 5 vehicles. Please upgrade.' });
     }
     if (sub.plan === 'professional' && vehicleCount >= 30) {
-      return res.status(403).json({ message: 'Professional plan limited to 30 vehicles. Please upgrade to Enterprise.' });
+      return res.status(403).json({ message: 'Professional plan limited to 30 vehicles. Please upgrade.' });
     }
 
-    // Create the vehicle and link it to the user
     const vehicle = await Vehicle.create({
       ...req.body,
       owner: req.user._id 
@@ -36,7 +32,6 @@ exports.createVehicle = async (req, res) => {
 // 2. List Vehicles
 exports.listVehicles = async (req, res) => {
   try {
-    // Only show vehicles owned by the logged-in user (or all if admin)
     const query = req.user.role === 'admin' ? {} : { owner: req.user._id };
     const vehicles = await Vehicle.find(query).populate('driver', 'name email phone');
     res.json(vehicles);
@@ -76,6 +71,7 @@ exports.deleteVehicle = async (req, res) => {
   }
 };
 
+// EXPORTS
 module.exports = {
   listVehicles,
   createVehicle,
