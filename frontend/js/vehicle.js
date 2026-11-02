@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         model: document.getElementById('v-model').value,
         odometerKm: document.getElementById('v-odometer').value,
         fuelLiters: document.getElementById('v-fuel').value,
-        status: 'active'
+        status: document.getElementById('v-status').value
       };
 
       try {
