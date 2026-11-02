@@ -8,7 +8,7 @@ const {
 } = require('../controllers/maintenanceController');
 const { protect } = require('../middleware/auth');
 
-router.get('/', listMaintenance);
+router.get('/', protect, listMaintenance);
 router.post('/', protect, createMaintenance);
 router.get('/predict/:vehicleId', protect, predictForVehicle);
 router.put('/:id/complete', protect, completeMaintenance);
