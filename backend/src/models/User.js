@@ -5,13 +5,11 @@ const userSchema = new mongoose.Schema(
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true },
     password: { type: String, required: true, minlength: 6 },
-    role: {
-      type: String,
-      enum: ['admin', 'manager', 'driver'],
-      default: 'driver',
-    },
+    role: { type: String, enum: ['admin', 'manager', 'driver'], default: 'driver' },
     phone: { type: String },
     company: { type: String },
+    apiKey: { type: String, unique: true, sparse: true }, 
+    erpWebhookUrl: { type: String, default: null }
   },
   { timestamps: true }
 );

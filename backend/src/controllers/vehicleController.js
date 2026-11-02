@@ -22,6 +22,20 @@ exports.createVehicle = async (req, res) => {
       ...req.body,
       owner: req.user._id 
     });
+
+        // ERP Integration Trigger
+    if (req.user.erpWebhookUrl) {
+      try {
+        await fetch(req.user.erpWebhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ event: 'vehicle_created', data: vehicle })
+        });
+        console.log('✅ ERP Webhook triggered');
+      } catch (error) {
+        console.error('❌ ERP Webhook failed:', error.message);
+      }
+    }
     
     res.status(201).json(vehicle);
   } catch (err) {
@@ -70,12 +84,3 @@ exports.deleteVehicle = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-
-// EXPORTS
-//module.exports = {
- // listVehicles,
-  //createVehicle,
-  //getVehicle,
-  //updateVehicle,
-  //deleteVehicle
-//};

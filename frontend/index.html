@@ -86,6 +86,7 @@
       <button class="nav-btn" data-page="eld">ELD</button>
       <button class="nav-btn" data-page="subscription">Subscription</button>
       <button class="nav-btn" data-page="billing">Billing</button>
+      <button class="nav-btn" data-page="enterprise">Enterprise</button>
     </nav>
   </div>
 
@@ -98,6 +99,7 @@
     <button class="nav-btn text-left w-full" data-page="eld">ELD</button>
     <button class="nav-btn text-left w-full" data-page="subscription">Subscription</button>
     <button class="nav-btn text-left w-full" data-page="billing">Billing</button>
+    <button class="nav-btn text-left w-full" data-page="enterprise">Enterprise</button>
   </div>
 </header>
 
@@ -248,6 +250,47 @@
   </div>
   </div>
   </main>
+
+      <div id="page-enterprise" class="page hidden">
+      <h2 class="text-xl font-bold text-blue-900 mb-4">Enterprise Dashboard</h2>
+      
+      <!-- API Access -->
+      <div class="bg-white rounded-xl shadow p-6 mb-6">
+        <h3 class="font-bold text-slate-800 mb-2">🔑 API Access</h3>
+        <p class="text-sm text-slate-500 mb-4">Use this key to connect your custom software to FleetFlow NG.</p>
+        <div class="flex gap-2">
+          <input type="text" id="apiKeyDisplay" readonly class="flex-1 border rounded-lg px-3 py-2 text-sm bg-slate-50 outline-none" placeholder="No API Key generated yet.">
+          <button onclick="generateApiKey()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700">Generate Key</button>
+        </div>
+      </div>
+
+      <!-- ERP Integration -->
+      <div class="bg-white rounded-xl shadow p-6 mb-6">
+        <h3 class="font-bold text-slate-800 mb-2">🔗 ERP Webhook Integration</h3>
+        <p class="text-sm text-slate-500 mb-4">We will send a POST request here whenever a new vehicle is added.</p>
+        <div class="flex gap-2">
+          <input type="url" id="erpUrlInput" class="flex-1 border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="https://your-erp-system.com/api/webhook">
+          <button onclick="saveErpUrl()" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-700">Save URL</button>
+        </div>
+      </div>
+
+      <!-- 24/7 Support -->
+      <div class="bg-blue-900 text-white rounded-xl p-6 shadow-lg">
+        <h3 class="text-lg font-bold mb-2">🌟 24/7 Priority Support</h3>
+        <p class="text-sm text-blue-200 mb-4">Your dedicated account manager is always available.</p>
+        <div class="flex items-center gap-4 mb-4">
+          <div class="w-12 h-12 rounded-full bg-white text-blue-900 flex items-center justify-center font-bold text-xl">IN</div>
+          <div>
+            <p class="font-bold">Ifesinachi Nduka</p>
+            <p class="text-xs text-blue-300">Dedicated Account Manager</p>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <a href="tel:+2348000000000" class="flex-1 bg-white text-blue-900 text-center py-2 rounded-lg text-sm font-bold hover:bg-blue-50">📞 Call 24/7</a>
+          <a href="https://wa.me/2348000000000" class="flex-1 bg-green-500 text-white text-center py-2 rounded-lg text-sm font-bold hover:bg-green-600">💬 WhatsApp</a>
+        </div>
+      </div>
+    </div>
 
   <footer class="text-center text-xs text-slate-500 py-6 border-t mt-10">
     FleetFlow NG • Developed by <strong>Ifesinachi John Nduka</strong> • © 2026 All Rights Reserved

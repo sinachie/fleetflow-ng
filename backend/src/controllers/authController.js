@@ -45,3 +45,25 @@ exports.login = async (req, res) => {
 exports.me = async (req, res) => {
   res.json(req.user);
 };
+
+const crypto = require('crypto');
+
+exports.generateApiKey = async (req, res) => {
+  try {
+    const newKey = 'ff_live_' + crypto.randomBytes(16).toString('hex');
+    await User.findByIdAndUpdate(req.user._id, { apiKey: newKey });
+    res.json({ apiKey: newKey });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.updateErpUrl = async (req, res) => {
+  try {
+    const { erpWebhookUrl } = req.body;
+    await User.findByIdAndUpdate(req.user._id, { erpWebhookUrl });
+    res.json({ message: 'ERP Webhook updated successfully', erpWebhookUrl });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

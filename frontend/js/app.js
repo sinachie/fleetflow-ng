@@ -46,3 +46,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
   showPage('dashboard');
 });
+
+// Add this inside the showPage function in app.js
+if (id === 'enterprise') {
+  loadEnterpriseData();
+}
+
+async function loadEnterpriseData() {
+  try {
+    const user = await Api.get('/auth/me');
+    document.getElementById('apiKeyDisplay').value = user.apiKey || '';
+    document.getElementById('erpUrlInput').value = user.erpWebhookUrl || '';
+  } catch(e) { console.log(e) }
+}
+
+async function generateApiKey() {
+  try {
+    const res = await Api.post('/auth/generate-api-key', {});
+    document.getElementById('apiKeyDisplay').value = res.apiKey;
+    alert('API Key generated!');
+  } catch(e) { alert(e.message); }
+}
+
+async function saveErpUrl() {
+  try {
+    const url = document.getElementById('erpUrlInput').value;
+    await Api.put('/auth/erp-url', { erpWebhookUrl: url });
+    alert('ERP URL saved!');
+  } catch(e) { alert(e.message); }
+}
