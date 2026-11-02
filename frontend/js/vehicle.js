@@ -26,3 +26,47 @@ document.addEventListener('DOMContentLoaded', async () => {
     tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-red-500 text-sm">${e.message}</td></tr>`;
   }
 });
+
+// --- MODAL LOGIC ---
+function openVehicleModal() {
+  document.getElementById('vehicleModal').classList.remove('hidden');
+  document.getElementById('vehicleModal').classList.add('flex');
+}
+
+function closeVehicleModal() {
+  document.getElementById('vehicleModal').classList.add('hidden');
+  document.getElementById('vehicleModal').classList.remove('flex');
+  document.getElementById('addVehicleForm').reset();
+}
+
+// --- FORM SUBMISSION (SENDING TO BACKEND) ---
+document.getElementById('addVehicleForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  const btn = document.getElementById('saveVehicleBtn');
+  btn.innerText = 'Saving...';
+  btn.disabled = true;
+
+  const vehicleData = {
+    plateNumber: document.getElementById('v-plate').value,
+    model: document.getElementById('v-model').value,
+    odometerKm: document.getElementById('v-odometer').value,
+    fuelLiters: document.getElementById('v-fuel').value,
+    status: 'active' // Default status
+  };
+
+  try {
+    // Send to your backend
+    await Api.post('/vehicles', vehicleData);
+    
+    // Close modal and reload the page to show the new vehicle
+    closeVehicleModal();
+    window.location.reload(); 
+    
+  } catch (error) {
+    // If it fails (e.g., you hit the Starter limit of 5), show the error message!
+    alert(`❌ ${error.message}`);
+    btn.innerText = 'Save Vehicle';
+    btn.disabled = false;
+  }
+});
