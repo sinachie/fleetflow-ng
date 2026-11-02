@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const list = document.getElementById('maintenanceList');
   
-  // 1. Load Records
+  // 1. Load Maintenance Records
   try {
     const records = await Api.get('/maintenance');
     if (!records.length) {
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       btn.disabled = true;
 
       const data = {
-        vehicle: document.getElementById('m-vehicle').value,
+        vehicle: document.getElementById('m-vehicle').value, // This now grabs the ID from the dropdown
         serviceType: document.getElementById('m-service').value,
         dueAtKm: document.getElementById('m-km').value,
         status: 'due-soon'
@@ -56,9 +56,25 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // 3. Modal Functions
-function openMaintenanceModal() {
+async function openMaintenanceModal() {
   document.getElementById('maintenanceModal').classList.remove('hidden');
   document.getElementById('maintenanceModal').classList.add('flex');
+  
+  // Load vehicles into the dropdown when the modal opens
+  const select = document.getElementById('m-vehicle');
+  try {
+    const vehicles = await Api.get('/vehicles');
+    if (vehicles.length === 0) {
+      select.innerHTML = `<option value="">No vehicles found. Add a vehicle first.</option>`;
+    } else {
+      // This creates an option for each vehicle, using the _id as the value and the plate number as the text
+      select.innerHTML = vehicles.map(v => 
+        `<option value="${v._id}">${v.plateNumber} - ${v.model}</option>`
+      ).join('');
+    }
+  } catch (error) {
+    select.innerHTML = `<option value="">Error loading vehicles</option>`;
+  }
 }
 
 function closeMaintenanceModal() {
