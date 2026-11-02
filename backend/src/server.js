@@ -1,3 +1,5 @@
+const dns = require('dns');
+dns.setServers(['8.8.8.8', '1.1.1.1']);
 require('./utils/cronJobs'); // This starts the timer
 require('dotenv').config();
 const express = require('express');
