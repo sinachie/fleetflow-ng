@@ -77,3 +77,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+// Function to check the user's plan and reveal the Enterprise tab
+async function checkEnterpriseAccess() {
+  try {
+    // We only check if the user is logged in
+    const token = localStorage.getItem('ff_token');
+    if (!token) return;
+
+    const sub = await Api.get('/subscriptions/my-plan');
+    
+    if (sub && sub.plan === 'enterprise') {
+      // Show Desktop button
+      const desktopBtn = document.getElementById('nav-enterprise-desktop');
+      if (desktopBtn) desktopBtn.classList.remove('hidden');
+
+      // Show Mobile button
+      const mobileBtn = document.getElementById('nav-enterprise-mobile');
+      if (mobileBtn) mobileBtn.classList.remove('hidden');
+    }
+  } catch (e) {
+    // If they don't have a plan, the API returns an error. We just do nothing.
+    console.log("No active subscription found, hiding Enterprise tab.");
+  }
+}
+
+// Call this function when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+  // Wait a small moment for the API setup to finish
+  setTimeout(checkEnterpriseAccess, 500);
+});
