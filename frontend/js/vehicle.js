@@ -75,3 +75,41 @@ function closeVehicleModal() {
     document.getElementById('addVehicleForm').reset();
   }
 }
+
+// --- EXPORT VEHICLES TO CSV ---
+async function exportVehiclesToCSV() {
+  try {
+    // 1. Fetch the latest data
+    const vehicles = await Api.get('/vehicles');
+    if (vehicles.length === 0) return alert('No vehicles to export.');
+
+    // 2. Define the CSV headers
+    const headers = ['Plate Number', 'Model', 'Status', 'Odometer (km)', 'Fuel (Liters)', 'Fuel Efficiency (km/L)'];
+    
+    // 3. Map the data to rows
+    const rows = vehicles.map(v => [
+      v.plateNumber,
+      v.model,
+      v.status || 'idle',
+      v.odometerKm || 0,
+      v.fuelLiters || 0,
+      v.fuelEfficiency || 0
+    ]);
+
+    // 4. Create the CSV string
+    let csvContent = headers.join(',') + '\n' + rows.map(e => e.join(',')).join('\n');
+
+    // 5. Trigger download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `FleetFlow_Vehicles_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+  } catch (error) {
+    alert(`❌ Failed to export: ${error.message}`);
+  }
+}

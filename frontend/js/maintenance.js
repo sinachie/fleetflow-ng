@@ -82,3 +82,40 @@ function closeMaintenanceModal() {
   document.getElementById('maintenanceModal').classList.remove('flex');
   document.getElementById('addMaintenanceForm').reset();
 }
+
+// --- EXPORT MAINTENANCE TO CSV ---
+async function exportMaintenanceToCSV() {
+  try {
+    // 1. Fetch the latest data
+    const records = await Api.get('/maintenance');
+    if (records.length === 0) return alert('No maintenance records to export.');
+
+    // 2. Define headers
+    const headers = ['Vehicle Plate', 'Service Type', 'Status', 'Due At (km)', 'Notes'];
+    
+    // 3. Map the data
+    const rows = records.map(m => [
+      m.vehicle ? m.vehicle.plateNumber : 'Unknown',
+      m.serviceType,
+      m.status,
+      m.dueAtKm || 'N/A',
+      m.notes || ''
+    ]);
+
+    // 4. Create the CSV string (Wrap text in quotes to prevent comma issues in Excel)
+    let csvContent = headers.join(',') + '\n' + rows.map(e => e.map(item => `"${item}"`).join(',')).join('\n');
+
+    // 5. Trigger download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `FleetFlow_Maintenance_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+  } catch (error) {
+    alert(`❌ Failed to export: ${error.message}`);
+  }
+}

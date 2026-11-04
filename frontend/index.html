@@ -114,14 +114,19 @@
       </div>
     </div>
 
-        <div id="page-vehicles" class="page hidden">
+            <div id="page-vehicles" class="page hidden">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-bold text-blue-900">Vehicles</h2>
-        <!-- Add Vehicle Button -->
-        <button onclick="openVehicleModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
-          + Add Vehicle
-        </button>
+        <div class="flex gap-2"> <!-- Add this wrapper -->
+          <button onclick="exportVehiclesToCSV()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+            Export CSV
+          </button>
+          <button onclick="openVehicleModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+            + Add Vehicle
+          </button>
+        </div>
       </div>
+      <!-- ... rest of the table ... -->
       
       <div class="bg-white rounded-xl shadow overflow-hidden">
         <table class="w-full text-sm">
@@ -179,16 +184,19 @@
       </div>
     </div>
 
-        <div id="page-maintenance" class="page hidden">
+            <div id="page-maintenance" class="page hidden">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-bold text-blue-900">Maintenance Tracker</h2>
-        <button onclick="openMaintenanceModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold">+ Log Maintenance</button>
+        <div class="flex gap-2"> <!-- Add this wrapper -->
+          <button onclick="exportMaintenanceToCSV()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+            Export CSV
+          </button>
+          <button onclick="openMaintenanceModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+            + Log Maintenance
+          </button>
+        </div>
       </div>
-      
-      <div class="bg-white rounded-xl shadow p-5">
-        <div id="maintenanceList" class="space-y-2 text-sm">Loading…</div>
-      </div>
-    </div>
+      <!-- ... rest of the list ... -->
 
     <!-- ADD MAINTENANCE MODAL -->
     <div id="maintenanceModal" class="fixed inset-0 bg-slate-900/50 hidden items-center justify-center z-50 px-4">
