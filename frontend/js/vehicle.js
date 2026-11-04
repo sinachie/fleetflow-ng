@@ -21,6 +21,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           </td>
           <td class="p-3">${v.odometerKm || 0} km</td>
           <td class="p-3">${v.fuelLiters || 0} L</td>
+          <td class="p-3">
+          <button onclick="shareLocation('${v.plateNumber}')" class="text-xs bg-slate-200 hover:bg-slate-300 px-2 py-1 rounded">📍 Update GPS</button>
+        </td>
         </tr>
       `).join('');
     }
@@ -112,4 +115,26 @@ async function exportVehiclesToCSV() {
   } catch (error) {
     alert(`❌ Failed to export: ${error.message}`);
   }
+}
+
+// Simulate a driver sharing their location
+function shareLocation(plateNumber) {
+  if (!navigator.geolocation) {
+    return alert("Geolocation is not supported by your browser");
+  }
+
+  navigator.geolocation.getCurrentPosition(async (position) => {
+    try {
+      await Api.post('/vehicles/update-location', {
+        plateNumber: plateNumber,
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      });
+      alert(`Location updated for ${plateNumber}! Check the ELD Map tab.`);
+    } catch (e) {
+      alert(`❌ Failed to update location: ${e.message}`);
+    }
+  }, () => {
+    alert("Unable to retrieve your location. Please allow location access.");
+  });
 }

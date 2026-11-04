@@ -15,6 +15,10 @@ const vehicleSchema = new mongoose.Schema({
   odometerKm: { type: Number, default: 0 },
   fuelLiters: { type: Number, default: 0 },
   fuelEfficiency: { type: Number, default: 0 },
-}, { timestamps: true });
+  currentLat: { type: Number, default: null },
+  currentLng: { type: Number, default: null }
+  }, { timestamps: true });
+  
 
 module.exports = mongoose.model('Vehicle', vehicleSchema);
+

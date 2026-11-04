@@ -1,7 +1,20 @@
+let map; // Global map variable
+
 document.addEventListener('DOMContentLoaded', async () => {
   const statsEl = document.getElementById('eldStats');
   const routesEl = document.getElementById('routes');
+
+  // 1. Initialize the Map (Center it on Lagos, Nigeria by default)
+  map = L.map('fleetMap').setView([6.5244, 3.3792], 7); 
+
+  // Load the free OpenStreetMap tiles
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap'
+  }).start();
+
   try {
+    // 2. Load ELD Stats
     const data = await Api.get('/eld/analytics');
     statsEl.innerHTML = [
       statCard('Total Distance', `${data.totalDistanceKm} km`),
@@ -19,9 +32,28 @@ document.addEventListener('DOMContentLoaded', async () => {
         <span class="text-sm font-bold text-green-600">-${r.savedKm} km</span>
       </div>
     `).join('');
+
+    // 3. Plot Vehicles on the Map
+    const vehicles = await Api.get('/vehicles');
+    
+    vehicles.forEach(v => {
+      if (v.currentLat && v.currentLng) {
+        // Create a marker for each truck
+        const marker = L.marker([v.currentLat, v.currentLng]).addTo(map);
+        
+        // Add a popup when you click the marker
+        marker.bindPopup(`
+          <div class="text-sm">
+            <strong>${v.plateNumber}</strong><br/>
+            Model: ${v.model}<br/>
+            Status: ${v.status}
+          </div>
+        `);
+      }
+    });
+
   } catch (e) {
     statsEl.innerHTML = `<p class="text-red-500 text-sm col-span-4">${e.message}</p>`;
-    routesEl.innerHTML = `<p class="text-red-500 text-sm">${e.message}</p>`;
   }
 });
 

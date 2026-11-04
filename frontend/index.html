@@ -6,16 +6,18 @@
   <title>FleetFlow NG — Logistics Management</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="css/styles.css" />
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-T1R97VHVYT"></script>
-<script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-T1R97VHVYT"></script>
+  <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
   gtag('config', 'G-T1R97VHVYT');
-</script>
-<script src="https://js.paystack.co/v1/inline.js"></script>
+  </script>
+  <script src="https://js.paystack.co/v1/inline.js"></script>
 </head>
 <body class="bg-slate-50 font-sans">
   <!-- LOGIN / REGISTER OVERLAY -->
@@ -136,6 +138,7 @@
               <th class="p-3 text-left">Status</th>
               <th class="p-3 text-left">Odometer</th>
               <th class="p-3 text-left">Fuel</th>
+              <th class="p-3 text-left">Map</th> 
             </tr>
           </thead>
           <tbody id="vehicleRows"></tbody>
@@ -240,9 +243,16 @@
       </div>
     </div>
 
-    <div id="page-eld" class="page hidden">
+      <div id="page-eld" class="page hidden">
       <h2 class="text-xl font-bold text-blue-900 mb-4">ELD Data Analyzer</h2>
       <div id="eldStats" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4"></div>
+      
+      <!-- NEW MAP CONTAINER -->
+      <div class="bg-white rounded-xl shadow p-4 mb-4">
+        <h3 class="font-bold text-blue-900 mb-3">Live Fleet Map</h3>
+        <div id="fleetMap" class="w-full h-80 rounded-lg border border-slate-200 z-0"></div>
+      </div>
+
       <div class="bg-white rounded-xl shadow p-5">
         <h3 class="font-bold text-blue-900 mb-3">Route Optimization</h3>
         <div id="routes" class="space-y-2 text-sm">Loading…</div>

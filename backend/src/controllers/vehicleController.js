@@ -98,3 +98,15 @@ exports.deleteVehicle = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+exports.updateLocation = async (req, res) => {
+  try {
+    const { lat, lng } = req.body;
+    await Vehicle.findOneAndUpdate(
+      { plateNumber: req.body.plateNumber, owner: req.user._id },
+      { currentLat: lat, currentLng: lng }
+    );
+    res.json({ message: 'Location updated' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
