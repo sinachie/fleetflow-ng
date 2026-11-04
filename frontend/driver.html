@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FleetFlow NG — Driver Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="bg-slate-50 font-sans h-screen flex flex-col">
+
+  <!-- Driver Header -->
+  <header class="bg-gradient-to-r from-blue-900 to-blue-600 text-white shadow-md p-4 flex justify-between items-center">
+    <div>
+      <h1 class="font-bold text-lg leading-tight">Driver Portal</h1>
+      <p class="text-[10px] text-blue-200" id="driver-truck-name">Loading truck...</p>
+    </div>
+    <button onclick="logoutDriver()" class="text-xs bg-red-500 hover:bg-red-600 px-3 py-1.5 rounded-lg font-semibold transition-colors">Log Out</button>
+  </header>
+
+  <!-- Driver Content -->
+  <main class="flex-1 overflow-y-auto p-4 space-y-4">
+    
+    <!-- Truck Status Card -->
+    <div class="bg-white rounded-xl shadow p-5 border-l-4 border-blue-500">
+      <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">My Vehicle</h2>
+      <p class="text-2xl font-bold text-blue-900" id="driver-plate">---</p>
+      <p class="text-sm text-slate-500" id="driver-model">---</p>
+      <div class="mt-3 flex gap-4 text-sm">
+        <div><span class="text-slate-400">Odometer:</span> <span class="font-semibold" id="driver-odo">0 km</span></div>
+        <div><span class="text-slate-400">Fuel:</span> <span class="font-semibold" id="driver-fuel">0 L</span></div>
+      </div>
+    </div>
+
+    <!-- Share Location Button -->
+    <button onclick="shareDriverLocation()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg transition-colors flex justify-center items-center gap-2">
+      📍 Share My Location with Office
+    </button>
+
+    <!-- Maintenance Alerts -->
+    <div class="bg-white rounded-xl shadow p-5">
+      <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">My Maintenance</h2>
+      <div id="driver-maintenance" class="space-y-2 text-sm text-slate-600">
+        Loading...
+      </div>
+    </div>
+
+    <!-- Quick Comms -->
+    <div class="bg-white rounded-xl shadow p-5">
+      <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Message Office</h2>
+      <div id="driver-chat-log" class="h-40 overflow-y-auto space-y-2 text-sm mb-3 bg-slate-50 p-2 rounded-lg"></div>
+      <div class="flex gap-2">
+        <input id="driver-chat-input" type="text" placeholder="Type message..." class="flex-1 border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" />
+        <button onclick="sendDriverMessage()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700">Send</button>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/driver.js"></script>
+</body>
+</html>

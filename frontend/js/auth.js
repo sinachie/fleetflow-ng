@@ -66,9 +66,13 @@ document.addEventListener('DOMContentLoaded', () => {
       Api.setToken(data.token);
       localStorage.setItem('ff_user', JSON.stringify(data.user));
 
-      // Hide auth screen and reload to load data
-      authScreen.classList.add('hidden');
-      window.location.reload();
+      // ADD THIS CHECK:
+      if (data.user.role === 'driver') {
+        window.location.href = 'driver.html';
+      } else {
+        authScreen.classList.add('hidden');
+        window.location.reload();
+      }
 
     } catch (err) {
       alert(`❌ Error: ${err.message}`);
