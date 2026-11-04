@@ -5,7 +5,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   const routesEl = document.getElementById('routes');
 
   // 1. Initialize the Map (Center it on Lagos, Nigeria by default)
-  map = L.map('fleetMap').setView([6.5244, 3.3792], 7); 
+ map = L.map('fleetMap').setView([6.5244, 3.3792], 7); 
+
+// ADD THIS: Force the map to render after the tab becomes visible
+setTimeout(() => {
+  map.invalidateSize();
+}, 400); 
 
   // Load the free OpenStreetMap tiles
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
