@@ -23,14 +23,28 @@ exports.createVehicle = async (req, res) => {
       owner: req.user._id 
     });
 
-        // ERP Integration Trigger
+           // ERP Integration Trigger
     if (req.user.erpWebhookUrl) {
       try {
+        // Construct a clean payload with only the necessary fields
+        const cleanPayload = {
+          event: 'vehicle_created',
+          data: {
+            plateNumber: vehicle.plateNumber,
+            model: vehicle.model,
+            status: vehicle.status,
+            odometerKm: vehicle.odometerKm,
+            fuelLiters: vehicle.fuelLiters,
+            fuelEfficiency: vehicle.fuelEfficiency
+          }
+        };
+
         await fetch(req.user.erpWebhookUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ event: 'vehicle_created', data: vehicle })
+          body: JSON.stringify(cleanPayload) 
         });
+        
         console.log('✅ ERP Webhook triggered');
       } catch (error) {
         console.error('❌ ERP Webhook failed:', error.message);
