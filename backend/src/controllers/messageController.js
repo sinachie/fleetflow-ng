@@ -2,13 +2,14 @@ const Message = require('../models/Message');
 
 exports.listMessages = async (req, res) => {
   try {
-    const { userId } = req.query;
-    const filter = userId ? { $or: [{ from: userId }, { to: userId }] } : {};
-    const msgs = await Message.find(filter)
+    // Fetch the last 50 messages, populate the sender's name and role
+    const msgs = await Message.find()
       .populate('from', 'name role')
-      .populate('to', 'name role')
-      .sort({ createdAt: 1 });
-    res.json(msgs);
+      .sort({ createdAt: -1 })
+      .limit(50);
+      
+    // Reverse the array so the oldest message is at the top of the chat
+    res.json(msgs.reverse());
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -16,12 +17,26 @@ exports.listMessages = async (req, res) => {
 
 exports.sendMessage = async (req, res) => {
   try {
+    // 1. Save the message to MongoDB
     const msg = await Message.create({
       from: req.user._id,
-      to: req.body.to || null,
       body: req.body.body,
     });
-    res.status(201).json(msg);
+
+    // 2. Populate the sender's info so the frontend knows who it is
+    const populatedMsg = await msg.populate('from', 'name role');
+
+    // 3. Broadcast to everyone via Socket.IO
+    const io = req.app.get('io');
+    io.emit('chat:message', {
+      id: populatedMsg._id,
+      author: populatedMsg.from.name,
+      role: populatedMsg.from.role,
+      body: populatedMsg.body,
+    });
+
+    // 4. Send success back to the sender
+    res.status(201).json(populatedMsg);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }

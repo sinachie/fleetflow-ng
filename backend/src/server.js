@@ -42,6 +42,9 @@ const io = new Server(server, {
   }
 });
 
+// THIS LINE: Allow controllers to access 'io'
+app.set('io', io); 
+
 // 5. NOW apply Helmet, JSON parsing, and Rate Limiting
 app.use(helmet());
 
@@ -82,6 +85,11 @@ app.use('/api/subscriptions', require('./routes/subscriptionRoutes'));
 // 5. Socket.IO Real-Time Logic
 io.on('connection', (socket) => {
   console.log('🔌 Client connected:', socket.id);
+
+  // We no longer need 'socket.on(chat:message)' here because the Controller handles it now.
+
+  socket.on('disconnect', () => console.log('❌ Disconnected:', socket.id));
+});
 
   socket.on('chat:message', (payload) => {
   // Broadcast to everyone EXCEPT the sender
