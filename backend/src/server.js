@@ -1,6 +1,3 @@
-//const dns = require('dns');
-//dns.setServers(['8.8.8.8', '1.1.1.1']);
-require('./utils/cronJobs'); // This starts the timer
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -9,6 +6,10 @@ const { Server } = require('socket.io');
 const connectDB = require('./config/db');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const dns = require('dns'); // Added for Windows DNS fix
+
+// Force public DNS to fix local connection issues
+dns.setServers(['8.8.8.8', '1.1.1.1']);
 
 const app = express();
 const server = http.createServer(app);
@@ -22,19 +23,17 @@ const allowedOrigins = [
   'https://fleetflow-ng-frontend.vercel.app'
 ];
 
-// 2. CORS MUST BE FIRST (This is the absolute priority)
+// 2. CORS MUST BE FIRST
 const corsOptions = {
   origin: allowedOrigins,
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'] // Explicitly allow OPTIONS
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'] 
 };
 
 app.use(cors(corsOptions));
-
-// 3. Explicitly handle preflight requests BEFORE any other middleware
 app.options('*', cors(corsOptions)); 
 
-// 4. Setup Socket.IO
+// 3. Setup Socket.IO
 const io = new Server(server, {
   cors: {
     origin: allowedOrigins,
@@ -42,16 +41,16 @@ const io = new Server(server, {
   }
 });
 
-// THIS LINE: Allow controllers to access 'io'
+// Allow controllers to access 'io'
 app.set('io', io); 
 
-// 5. NOW apply Helmet, JSON parsing, and Rate Limiting
+// 4. NOW apply Helmet, JSON parsing, and Rate Limiting
 app.use(helmet());
 
 // Parse JSON for all routes EXCEPT the webhook
 app.use((req, res, next) => {
   if (req.originalUrl === '/api/subscriptions/webhook') {
-    next(); // Skip JSON parsing for webhooks
+    next(); 
   } else {
     express.json()(req, res, next);
   }
@@ -74,7 +73,7 @@ app.get('/', (_req, res) =>
   })
 );
 
-// Routes (Keep your existing routes)
+// Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/vehicles', require('./routes/vehicleRoutes'));
 app.use('/api/maintenance', require('./routes/maintenanceRoutes'));
@@ -82,20 +81,11 @@ app.use('/api/messages', require('./routes/messageRoutes'));
 app.use('/api/eld', require('./routes/eldRoutes'));
 app.use('/api/subscriptions', require('./routes/subscriptionRoutes'));
 
-// 5. Socket.IO Real-Time Logic
+// 5. Socket.IO Real-Time Logic (Cleaned up)
 io.on('connection', (socket) => {
   console.log('🔌 Client connected:', socket.id);
 
-  // We no longer need 'socket.on(chat:message)' here because the Controller handles it now.
-
-  socket.on('disconnect', () => console.log('❌ Disconnected:', socket.id));
-});
-
-  socket.on('chat:message', (payload) => {
-  // Broadcast to everyone EXCEPT the sender
-  socket.broadcast.emit('chat:message', payload);
-});
-
+  // The broadcasting is now handled by the messageController
   socket.on('disconnect', () => console.log('❌ Disconnected:', socket.id));
 });
 
