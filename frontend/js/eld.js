@@ -4,19 +4,23 @@ document.addEventListener('DOMContentLoaded', async () => {
   const statsEl = document.getElementById('eldStats');
   const routesEl = document.getElementById('routes');
 
-  // 1. Initialize Map
-  map = L.map('fleetMap', { scrollWheelZoom: false }).setView([6.5244, 3.3792], 7);  
+  // 1. Initialize Map with explicit size checks
+  map = L.map('fleetMap', { 
+    scrollWheelZoom: false,
+    preferCanvas: true 
+  }).setView([6.5244, 3.3792], 7); 
 
   // 2. Force render after tab is visible
   setTimeout(() => {
     map.invalidateSize();
   }, 400); 
 
-  // 3. Load Tiles (Ensure it is addTo(map), NOT start())
+  // 3. Load Tiles
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '© OpenStreetMap'
   }).addTo(map); 
+  
 
   try {
     // 4. Load Stats
