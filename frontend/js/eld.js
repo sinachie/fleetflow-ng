@@ -1,25 +1,25 @@
-let map; // Global map variable
+let map; 
 
 document.addEventListener('DOMContentLoaded', async () => {
   const statsEl = document.getElementById('eldStats');
   const routesEl = document.getElementById('routes');
 
-  // 1. Initialize the Map (Center it on Lagos, Nigeria by default)
- map = L.map('fleetMap').setView([6.5244, 3.3792], 7); 
+  // 1. Initialize Map
+  map = L.map('fleetMap').setView([6.5244, 3.3792], 7); 
 
-// ADD THIS: Force the map to render after the tab becomes visible
-setTimeout(() => {
-  map.invalidateSize();
-}, 400); 
+  // 2. Force render after tab is visible
+  setTimeout(() => {
+    map.invalidateSize();
+  }, 400); 
 
-  // Load the free OpenStreetMap tiles
+  // 3. Load Tiles (Ensure it is addTo(map), NOT start())
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '© OpenStreetMap'
-  }).start();
+  }).addTo(map); 
 
   try {
-    // 2. Load ELD Stats
+    // 4. Load Stats
     const data = await Api.get('/eld/analytics');
     statsEl.innerHTML = [
       statCard('Total Distance', `${data.totalDistanceKm} km`),
@@ -38,15 +38,11 @@ setTimeout(() => {
       </div>
     `).join('');
 
-    // 3. Plot Vehicles on the Map
+    // 5. Plot Vehicles
     const vehicles = await Api.get('/vehicles');
-    
     vehicles.forEach(v => {
       if (v.currentLat && v.currentLng) {
-        // Create a marker for each truck
         const marker = L.marker([v.currentLat, v.currentLng]).addTo(map);
-        
-        // Add a popup when you click the marker
         marker.bindPopup(`
           <div class="text-sm">
             <strong>${v.plateNumber}</strong><br/>

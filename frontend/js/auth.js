@@ -111,3 +111,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // Wait a small moment for the API setup to finish
   setTimeout(checkEnterpriseAccess, 500);
 });
+
+// --- LOGOUT LOGIC ---
+function logoutUser() {
+  // 1. Ask for confirmation
+  if (!confirm('Are you sure you want to log out?')) return;
+
+  // 2. Clear the token and user data from the browser
+  localStorage.removeItem('ff_token');
+  localStorage.removeItem('ff_user');
+
+  // 3. Redirect back to the login screen
+  window.location.reload();
+}
