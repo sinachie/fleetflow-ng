@@ -80,6 +80,7 @@ app.use('/api/maintenance', require('./routes/maintenanceRoutes'));
 app.use('/api/messages', require('./routes/messageRoutes'));
 app.use('/api/eld', require('./routes/eldRoutes'));
 app.use('/api/subscriptions', require('./routes/subscriptionRoutes'));
+app.use('/api/trips', require('./routes/tripRoutes'));
 
 // 5. Socket.IO Real-Time Logic (Cleaned up)
 io.on('connection', (socket) => {

@@ -2,83 +2,85 @@
 document.addEventListener('DOMContentLoaded', () => {
   const navBtns = document.querySelectorAll('.nav-btn');
   const pages = document.querySelectorAll('.page');
-
-  function showPage(id) {
-  pages.forEach((p) => p.classList.add('hidden'));
-  document.getElementById(`page-${id}`)?.classList.remove('hidden');
-  
-  navBtns.forEach((b) => b.classList.toggle('active', b.dataset.page === id));
-
-  // Fix Leaflet Map rendering when the ELD tab is clicked
-  if (id === 'eld' && window.map) {
-    setTimeout(() => {
-      window.map.invalidateSize();
-    }, 200);
-  }
-}
-  navBtns.forEach((btn) =>
-    btn.addEventListener('click', () => showPage(btn.dataset.page))
-  );
-
-  showPage('dashboard');
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  const navBtns = document.querySelectorAll('.nav-btn');
-  const pages = document.querySelectorAll('.page');
   const mobileMenuBtn = document.getElementById('mobile-menu-btn');
   const mobileMenu = document.getElementById('mobile-menu');
 
   // Toggle Mobile Menu
-  mobileMenuBtn.addEventListener('click', () => {
-    mobileMenu.classList.toggle('hidden');
-    mobileMenu.classList.toggle('flex');
-  });
-
-  function showPage(id) {
-    pages.forEach((p) => p.classList.add('hidden'));
-    document.getElementById(`page-${id}`)?.classList.remove('hidden');
-    
-    // Update active state on all buttons
-    navBtns.forEach((b) => b.classList.toggle('active', b.dataset.page === id));
-
-    // Close mobile menu on click
-    mobileMenu.classList.add('hidden');
-    mobileMenu.classList.remove('flex');
+  if (mobileMenuBtn && mobileMenu) {
+    mobileMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+      mobileMenu.classList.toggle('flex');
+    });
   }
 
+  // Main Page Navigation Function
+  function showPage(id) {
+    // 1. Hide all pages
+    pages.forEach((p) => p.classList.add('hidden'));
+    
+    // 2. Show the selected page
+    const targetPage = document.getElementById(`page-${id}`);
+    if (targetPage) targetPage.classList.remove('hidden');
+    
+    // 3. Update nav buttons active state
+    navBtns.forEach((b) => b.classList.toggle('active', b.dataset.page === id));
+
+    // 4. Close mobile menu if it's open
+    if (mobileMenu) {
+      mobileMenu.classList.add('hidden');
+      mobileMenu.classList.remove('flex');
+    }
+
+    // 5. THE LEAFLET FIX: Force the map to resize when the ELD tab is visible
+    if (id === 'eld' && window.map) {
+      setTimeout(() => {
+        window.map.invalidateSize(); 
+      }, 300);
+    }
+
+    // 6. Load Enterprise Data if they click the Enterprise tab
+    if (id === 'enterprise') {
+      loadEnterpriseData();
+    }
+  }
+
+  // Add click events to all nav buttons
   navBtns.forEach((btn) =>
     btn.addEventListener('click', () => showPage(btn.dataset.page))
   );
 
+  // Initialize with Dashboard
   showPage('dashboard');
 });
 
-// Add this inside the showPage function in app.js
-if (id === 'enterprise') {
-  loadEnterpriseData();
-}
+// --- ENTERPRISE FUNCTIONS (Must be outside DOMContentLoaded) ---
 
 async function loadEnterpriseData() {
   try {
     const user = await Api.get('/auth/me');
     document.getElementById('apiKeyDisplay').value = user.apiKey || '';
     document.getElementById('erpUrlInput').value = user.erpWebhookUrl || '';
-  } catch(e) { console.log(e) }
+  } catch(e) { 
+    console.log("Could not load enterprise data:", e.message); 
+  }
 }
 
 async function generateApiKey() {
   try {
     const res = await Api.post('/auth/generate-api-key', {});
     document.getElementById('apiKeyDisplay').value = res.apiKey;
-    alert('API Key generated!');
-  } catch(e) { alert(e.message); }
+    alert('API Key generated successfully!');
+  } catch(e) { 
+    alert(`❌ Error: ${e.message}`); 
+  }
 }
 
 async function saveErpUrl() {
   try {
     const url = document.getElementById('erpUrlInput').value;
     await Api.put('/auth/erp-url', { erpWebhookUrl: url });
-    alert('ERP URL saved!');
-  } catch(e) { alert(e.message); }
+    alert('ERP URL saved successfully!');
+  } catch(e) { 
+    alert(`❌ Error: ${e.message}`); 
+  }
 }
