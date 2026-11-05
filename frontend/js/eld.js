@@ -10,10 +10,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     preferCanvas: true
   }).setView([6.5244, 3.3792], 7);
 
-  // 2. Load Tiles (Using CartoDB for better reliability)
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  // 2. Load Tiles 
+   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
-    attribution: '© OpenStreetMap © CARTO'
+    attribution: '© OpenStreetMap contributors'
   }).addTo(map);
 
   // 3. The Magic Fix for Hidden Tabs
