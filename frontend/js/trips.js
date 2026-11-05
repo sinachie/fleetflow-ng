@@ -16,11 +16,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         ).join('');
       }
     } catch (e) { 
-      // THIS FIXES THE INFINITE LOADING
       vehicleSelect.innerHTML = `<option value="">Error loading (Server asleep). Refresh page.</option>`;
       console.log(e); 
     }
   }
+
   // 2. Load previous trips
   async function loadTrips() {
     try {
@@ -42,11 +42,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         `).join('');
       }
     } catch (e) { 
-      // THIS FIXES THE INFINITE LOADING
-      vehicleSelect.innerHTML = `<option value="">Error loading (Server asleep). Refresh page.</option>`;
+      // Changed this from vehicleSelect to tripsList so the right section updates
+      tripsList.innerHTML = `<p class="text-red-500 text-sm">Error loading trips. Is the server awake?</p>`;
       console.log(e); 
     }
   }
+
   // 3. Handle Form Submission
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -61,7 +62,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         origin: document.getElementById('t-origin').value,
         destination: document.getElementById('t-destination').value,
         scheduledDate: document.getElementById('t-date').value,
-        isRoundTrip: document.getElementById('t-round-trip').checked
+        isRoundTrip: document.getElementById('t-round-trip').checked, // <-- ADDED COMMA HERE
         fuelType: document.getElementById('t-fuel-type').value 
       };
 
