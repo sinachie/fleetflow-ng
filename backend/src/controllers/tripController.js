@@ -50,20 +50,27 @@ exports.createTrip = async (req, res) => {
       return res.status(500).json({ message: 'Could not calculate a driving route between these cities.' });
     }
 
-    // OSRM returns distance in meters. Convert to km.
-    const distanceKm = Math.round(routeResponse.data.routes[0].distance / 1000);
+    // One-way distance
+    const oneWayDistance = Math.round(routeResponse.data.routes[0].distance / 1000);
     
-    // 7. Estimate Fuel (Assuming 6 km/L average for Nigerian trucks)
-    const estimatedFuel = Math.round(distanceKm / 6);
+    // Read the checkbox from the frontend
+    const { isRoundTrip } = req.body; 
+    
+    // If Round Trip, double the distance
+    const finalDistance = isRoundTrip ? oneWayDistance * 2 : oneWayDistance;
+    
+    // 7. Estimate Fuel (Assuming 6 km/L average)
+    const estimatedFuel = Math.round(finalDistance / 6);
 
     // 8. Save the trip
     const trip = await Trip.create({
       vehicle,
       origin,
       destination,
-      distanceKm,
+      distanceKm: finalDistance,
       estimatedFuelLiters: estimatedFuel,
-      scheduledDate
+      scheduledDate,
+      isRoundTrip: isRoundTrip || false
     });
 
     res.status(201).json(trip);

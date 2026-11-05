@@ -8,6 +8,7 @@ const tripSchema = new mongoose.Schema({
   status: { type: String, enum: ['scheduled', 'in-progress', 'completed'], default: 'scheduled' },
   scheduledDate: { type: Date },
   estimatedFuelLiters: { type: Number }
+  isRoundTrip: { type: Boolean, default: false }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Trip', tripSchema);

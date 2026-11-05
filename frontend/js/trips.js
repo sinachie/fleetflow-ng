@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         origin: document.getElementById('t-origin').value,
         destination: document.getElementById('t-destination').value,
         scheduledDate: document.getElementById('t-date').value,
+        isRoundTrip: document.getElementById('t-round-trip').checked
       };
 
       const trip = await Api.post('/trips', data);
@@ -62,7 +63,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       // Show Results
       resultsDiv.innerHTML = `
         <div class="bg-green-50 border border-green-200 p-4 rounded-lg">
-          <p class="text-green-800 font-bold mb-2">✅ Route Calculated!</p>
+          <p class="text-green-800 font-bold mb-2">✅ Route Calculated! ${trip.isRoundTrip ? '(Round Trip)' : '(One-way)'}</p>
           <div class="grid grid-cols-2 gap-4">
             <div>
               <p class="text-xs text-slate-500">Total Distance</p>
