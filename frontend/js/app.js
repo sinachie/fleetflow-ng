@@ -15,34 +15,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Main Page Navigation Function
   function showPage(id) {
-    // 1. Hide all pages
-    pages.forEach((p) => p.classList.add('hidden'));
-    
-    // 2. Show the selected page
-    const targetPage = document.getElementById(`page-${id}`);
-    if (targetPage) targetPage.classList.remove('hidden');
-    
-    // 3. Update nav buttons active state
-    navBtns.forEach((b) => b.classList.toggle('active', b.dataset.page === id));
+  // 1. Hide all pages
+  pages.forEach((p) => p.classList.add('hidden'));
+  
+  // 2. Show the selected page
+  const targetPage = document.getElementById(`page-${id}`);
+  if (targetPage) targetPage.classList.remove('hidden');
+  
+  // 3. Update nav buttons active state
+  navBtns.forEach((b) => b.classList.toggle('active', b.dataset.page === id));
 
-    // 4. Close mobile menu if it's open
-    if (mobileMenu) {
-      mobileMenu.classList.add('hidden');
-      mobileMenu.classList.remove('flex');
-    }
-
-    // 5. THE LEAFLET FIX: Force the map to resize when the ELD tab is visible
-    if (id === 'eld' && window.map) {
-      setTimeout(() => {
-        window.map.invalidateSize(); 
-      }, 300);
-    }
-
-    // 6. Load Enterprise Data if they click the Enterprise tab
-    if (id === 'enterprise') {
-      loadEnterpriseData();
-    }
+  // 4. Close mobile menu if it's open
+  if (mobileMenu) {
+    mobileMenu.classList.add('hidden');
+    mobileMenu.classList.remove('flex');
   }
+
+  // 5. 🔥 THE ULTIMATE LEAFLET FIX
+  if (id === 'eld' && window.map) {
+    // We wait 400ms for the mobile browser to finish drawing the hidden div
+    setTimeout(() => {
+      window.map.invalidateSize(); 
+      // Force the browser to trigger a resize event
+      window.dispatchEvent(new Event('resize'));
+    }, 400);
+  }
+
+  // 6. Load Enterprise Data
+  if (id === 'enterprise') {
+    loadEnterpriseData();
+  }
+}
 
   // Add click events to all nav buttons
   navBtns.forEach((btn) =>

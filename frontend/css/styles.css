@@ -46,3 +46,8 @@ body::after {
   color: #94a3b8;
   pointer-events: none;
 }
+#fleetMap {
+  min-height: 350px;
+  width: 100%;
+  z-index: 1;
+}

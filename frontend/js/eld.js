@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const routesEl = document.getElementById('routes');
 
   // 1. Initialize Map
-  map = L.map('fleetMap').setView([6.5244, 3.3792], 7); 
+  map = L.map('fleetMap', { scrollWheelZoom: false }).setView([6.5244, 3.3792], 7);  
 
   // 2. Force render after tab is visible
   setTimeout(() => {
