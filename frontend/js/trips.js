@@ -15,9 +15,12 @@ document.addEventListener('DOMContentLoaded', async () => {
           `<option value="${v._id}">${v.plateNumber} - ${v.model}</option>`
         ).join('');
       }
-    } catch (e) { console.log(e); }
+    } catch (e) { 
+      // THIS FIXES THE INFINITE LOADING
+      vehicleSelect.innerHTML = `<option value="">Error loading (Server asleep). Refresh page.</option>`;
+      console.log(e); 
+    }
   }
-
   // 2. Load previous trips
   async function loadTrips() {
     try {
@@ -38,9 +41,12 @@ document.addEventListener('DOMContentLoaded', async () => {
           </div>
         `).join('');
       }
-    } catch (e) { console.log(e); }
+    } catch (e) { 
+      // THIS FIXES THE INFINITE LOADING
+      vehicleSelect.innerHTML = `<option value="">Error loading (Server asleep). Refresh page.</option>`;
+      console.log(e); 
+    }
   }
-
   // 3. Handle Form Submission
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
