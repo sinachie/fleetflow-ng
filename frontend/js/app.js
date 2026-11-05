@@ -4,11 +4,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const pages = document.querySelectorAll('.page');
 
   function showPage(id) {
-    pages.forEach((p) => p.classList.add('hidden'));
-    document.getElementById(`page-${id}`)?.classList.remove('hidden');
-    navBtns.forEach((b) => b.classList.toggle('active', b.dataset.page === id));
-  }
+  pages.forEach((p) => p.classList.add('hidden'));
+  document.getElementById(`page-${id}`)?.classList.remove('hidden');
+  
+  navBtns.forEach((b) => b.classList.toggle('active', b.dataset.page === id));
 
+  // Fix Leaflet Map rendering when the ELD tab is clicked
+  if (id === 'eld' && window.map) {
+    setTimeout(() => {
+      window.map.invalidateSize();
+    }, 200);
+  }
+}
   navBtns.forEach((btn) =>
     btn.addEventListener('click', () => showPage(btn.dataset.page))
   );
