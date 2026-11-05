@@ -50,7 +50,10 @@ body::after {
 /* Ensure the map container has explicit dimensions */
 #fleetMap {
   width: 100%;
-  height: 500px; /* Adjust this height (e.g., 400px, 600px, or 100vh) to fit your design */
-  min-height: 350px;
+  height: 500px;
+  min-height: 500px;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+  /* CRITICAL: This ensures Leaflet tiles don't show as blank */
+  background-color: #

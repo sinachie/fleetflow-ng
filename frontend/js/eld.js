@@ -1,11 +1,4 @@
-let map; 
-
-document.addEventListener('DOMContentLoaded', async () => {
-  const statsEl = document.getElementById('eldStats');
-  const routesEl = document.getElementById('routes');
-
-  // 1. Initialize Map 
-  let map;
+let map;
 
 document.addEventListener('DOMContentLoaded', async () => {
   const statsEl = document.getElementById('eldStats');
@@ -17,23 +10,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     preferCanvas: true
   }).setView([6.5244, 3.3792], 7);
 
-  // 2. Load Tiles
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  // 2. Load Tiles (Using CartoDB for better reliability)
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     maxZoom: 19,
-    attribution: '© OpenStreetMap contributors'
+    attribution: '© OpenStreetMap © CARTO'
   }).addTo(map);
 
-  // 3. 🔥 THE MAGIC FIX: ResizeObserver
-  // This watches the map container. The moment it becomes visible on screen, it redraws.
+  // 3. The Magic Fix for Hidden Tabs
   const resizeObserver = new ResizeObserver(() => {
     map.invalidateSize();
   });
   resizeObserver.observe(document.getElementById('fleetMap'));
-  
 
+  // 4. Fetch Stats & Vehicles
   try {
-    // 4. Load Stats
+    console.log("Fetching ELD Analytics...");
     const data = await Api.get('/eld/analytics');
+    
     statsEl.innerHTML = [
       statCard('Total Distance', `${data.totalDistanceKm} km`),
       statCard('Total Fuel', `${data.totalFuelLiters} L`),
@@ -51,7 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       </div>
     `).join('');
 
-    // 5. Plot Vehicles
+    // Plot Vehicles
     const vehicles = await Api.get('/vehicles');
     vehicles.forEach(v => {
       if (v.currentLat && v.currentLng) {
@@ -67,7 +60,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
   } catch (e) {
-    statsEl.innerHTML = `<p class="text-red-500 text-sm col-span-4">${e.message}</p>`;
+    console.error("❌ ELD Fetch Error:", e);
+    statsEl.innerHTML = `<p class="text-red-500 text-sm col-span-4">Failed to load stats. Is the server awake?</p>`;
+    routesEl.innerHTML = `<p class="text-red-500 text-sm">Failed to load routes.</p>`;
   }
 });
 
