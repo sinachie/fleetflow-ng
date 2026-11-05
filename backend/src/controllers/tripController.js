@@ -59,7 +59,7 @@ exports.createTrip = async (req, res) => {
     // 7. Estimate Fuel based on Fuel Type
     let fuelEfficiency = 2.5; // Default to AGO (Diesel)
     if (fuelType === 'PMS') fuelEfficiency = 12.5; // Petrol Cars
-    if (fuelType === 'LPG') fuelEfficiency = 1.2;  // LPG Trucks
+    if (fuelType === 'CNG') fuelEfficiency = 1.5;  // CNG Trucks
 
     const estimatedFuel = Math.round(finalDistance / fuelEfficiency);
 
