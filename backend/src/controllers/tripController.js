@@ -53,14 +53,17 @@ exports.createTrip = async (req, res) => {
     // One-way distance
     const oneWayDistance = Math.round(routeResponse.data.routes[0].distance / 1000);
     
-    // Read the checkbox from the frontend
-    const { isRoundTrip } = req.body; 
+    const { isRoundTrip, fuelType } = req.body; 
     
     // If Round Trip, double the distance
     const finalDistance = isRoundTrip ? oneWayDistance * 2 : oneWayDistance;
     
-    // 7. Estimate Fuel (Assuming 6 km/L average)
-    const estimatedFuel = Math.round(finalDistance / 6);
+    // 7. Estimate Fuel based on Fuel Type
+    let fuelEfficiency = 2.5; // Default to AGO (Diesel)
+    if (fuelType === 'PMS') fuelEfficiency = 12.5; // Petrol Cars
+    if (fuelType === 'LPG') fuelEfficiency = 1.2;  // LPG Trucks (Burns more volume)
+
+    const estimatedFuel = Math.round(finalDistance / fuelEfficiency);
 
     // 8. Save the trip
     const trip = await Trip.create({
@@ -70,20 +73,9 @@ exports.createTrip = async (req, res) => {
       distanceKm: finalDistance,
       estimatedFuelLiters: estimatedFuel,
       scheduledDate,
-      isRoundTrip: isRoundTrip || false
+      isRoundTrip: isRoundTrip || false,
+      fuelType: fuelType || 'AGO'
     });
-
-    res.status(201).json(trip);
-  } catch (error) {
-    // Log the EXACT error to Render so we can debug it if it fails again
-    console.error("OSRM/Nominatim Error:", error.response ? error.response.data : error.message);
-    
-    res.status(500).json({ 
-      message: 'Error calculating route. Please try again later.',
-      details: error.message 
-    });
-  }
-};
 
 // ... (Keep your listTrips function below) ...
 exports.listTrips = async (req, res) => {

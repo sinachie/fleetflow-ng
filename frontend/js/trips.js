@@ -56,6 +56,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         destination: document.getElementById('t-destination').value,
         scheduledDate: document.getElementById('t-date').value,
         isRoundTrip: document.getElementById('t-round-trip').checked
+        fuelType: document.getElementById('t-fuel-type').value 
       };
 
       const trip = await Api.post('/trips', data);
@@ -63,14 +64,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       // Show Results
       resultsDiv.innerHTML = `
         <div class="bg-green-50 border border-green-200 p-4 rounded-lg">
-          <p class="text-green-800 font-bold mb-2">✅ Route Calculated! ${trip.isRoundTrip ? '(Round Trip)' : '(One-way)'}</p>
+          <p class="text-green-800 font-bold mb-2">✅ Route Calculated! (${trip.fuelType})</p>
           <div class="grid grid-cols-2 gap-4">
             <div>
               <p class="text-xs text-slate-500">Total Distance</p>
               <p class="text-xl font-bold text-blue-800">${trip.distanceKm} km</p>
             </div>
             <div>
-              <p class="text-xs text-slate-500">Est. Fuel (6km/L)</p>
+              <p class="text-xs text-slate-500">Est. Fuel</p>
               <p class="text-xl font-bold text-amber-600">${trip.estimatedFuelLiters} L</p>
             </div>
           </div>
