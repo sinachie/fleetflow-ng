@@ -7,8 +7,8 @@ const tripSchema = new mongoose.Schema({
   distanceKm: { type: Number },
   status: { type: String, enum: ['scheduled', 'in-progress', 'completed'], default: 'scheduled' },
   scheduledDate: { type: Date },
-  estimatedFuelLiters: { type: Number }
-  isRoundTrip: { type: Boolean, default: false }
+  estimatedFuelLiters: { type: Number },
+  isRoundTrip: { type: Boolean, default: false },
   fuelType: { type: String, enum: ['AGO', 'PMS', 'LPG'], default: 'AGO' }
 }, { timestamps: true });
 

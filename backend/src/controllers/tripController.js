@@ -6,7 +6,7 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 exports.createTrip = async (req, res) => {
   try {
-    const { vehicle, origin, destination, scheduledDate } = req.body;
+    const { vehicle, origin, destination, scheduledDate, isRoundTrip, fuelType } = req.body;
     
     // 1. Custom headers to comply with Nominatim's strict usage policy
     const headers = {
@@ -36,13 +36,13 @@ exports.createTrip = async (req, res) => {
       return res.status(400).json({ message: `Could not find location: ${destination}. Please check the spelling.` });
     }
 
-    // 5. Extract coordinates (Nominatim returns latitude & longitude)
+    // 5. Extract coordinates
     const originLat = geoOrigin.data[0].lat;
     const originLon = geoOrigin.data[0].lon;
     const destLat = geoDest.data[0].lat;
     const destLon = geoDest.data[0].lon;
 
-    // 6. Calculate Route using OSRM (Note: OSRM requires Lon,Lat format)
+    // 6. Calculate Route using OSRM
     const osrmUrl = `http://router.project-osrm.org/route/v1/driving/${originLon},${originLat};${destLon},${destLat}?overview=false`;
     const routeResponse = await axios.get(osrmUrl);
 
@@ -53,15 +53,13 @@ exports.createTrip = async (req, res) => {
     // One-way distance
     const oneWayDistance = Math.round(routeResponse.data.routes[0].distance / 1000);
     
-    const { isRoundTrip, fuelType } = req.body; 
-    
     // If Round Trip, double the distance
     const finalDistance = isRoundTrip ? oneWayDistance * 2 : oneWayDistance;
     
     // 7. Estimate Fuel based on Fuel Type
     let fuelEfficiency = 2.5; // Default to AGO (Diesel)
     if (fuelType === 'PMS') fuelEfficiency = 12.5; // Petrol Cars
-    if (fuelType === 'LPG') fuelEfficiency = 1.2;  // LPG Trucks (Burns more volume)
+    if (fuelType === 'LPG') fuelEfficiency = 1.2;  // LPG Trucks
 
     const estimatedFuel = Math.round(finalDistance / fuelEfficiency);
 
@@ -77,7 +75,16 @@ exports.createTrip = async (req, res) => {
       fuelType: fuelType || 'AGO'
     });
 
-// ... (Keep your listTrips function below) ...
+    res.status(201).json(trip);
+  } catch (error) {
+    console.error("OSRM/Nominatim Error:", error.response ? error.response.data : error.message);
+    res.status(500).json({ 
+      message: 'Error calculating route. Please try again later.',
+      details: error.message 
+    });
+  }
+};
+
 exports.listTrips = async (req, res) => {
   try {
     const trips = await Trip.find().populate('vehicle', 'plateNumber model');
