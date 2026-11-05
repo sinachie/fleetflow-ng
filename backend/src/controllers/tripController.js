@@ -56,10 +56,13 @@ exports.createTrip = async (req, res) => {
     // If Round Trip, double the distance
     const finalDistance = isRoundTrip ? oneWayDistance * 2 : oneWayDistance;
     
-    // 7. Estimate Fuel based on Fuel Type
-    let fuelEfficiency = 2.5; // Default to AGO (Diesel)
-    if (fuelType === 'PMS') fuelEfficiency = 12.5; // Petrol Cars
-    if (fuelType === 'CNG') fuelEfficiency = 1.5;  // CNG Trucks
+        // 7. Estimate Fuel based on Fuel Type
+    let fuelEfficiency = 2.5; // Default: Heavy Diesel Truck
+    
+    if (fuelType === 'AGO_HEAVY') fuelEfficiency = 2.5; // Heavy Truck (approx 40L/100km)
+    if (fuelType === 'AGO_MINI') fuelEfficiency = 12;   // Mini Truck / Van (approx 8.3L/100km)
+    if (fuelType === 'PMS') fuelEfficiency = 10;        // Petrol Car / Van (approx 10L/100km)
+    if (fuelType === 'CNG') fuelEfficiency = 1.5;       // CNG Trucks
 
     const estimatedFuel = Math.round(finalDistance / fuelEfficiency);
 
