@@ -67,3 +67,42 @@ exports.updateErpUrl = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+// Get all users in the same company
+exports.getTeam = async (req, res) => {
+  try {
+    // Finds all users with the same company name as the logged-in admin
+    const team = await User.find({ company: req.user.company }).select('-password');
+    res.json(team);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Create a new team member (Driver or Manager)
+exports.createTeamMember = async (req, res) => {
+  try {
+    const { name, email, password, role } = req.body;
+
+    // 1. Check if email already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(400).json({ message: 'Email already in use' });
+
+    // 2. Hash password
+    const bcrypt = require('bcryptjs');
+    const hashed = await bcrypt.hash(password, 10);
+
+    // 3. Create the user, assigning them to the Admin's company
+    const newUser = await User.create({
+      name,
+      email,
+      password: hashed,
+      role: role, // 'driver' or 'manager'
+      company: req.user.company // This links them to the Admin's company
+    });
+
+    res.status(201).json({ message: 'Team member created successfully', user: newUser });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
