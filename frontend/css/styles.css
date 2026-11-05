@@ -46,9 +46,11 @@ body::after {
   color: #94a3b8;
   pointer-events: none;
 }
+
+/* Ensure the map container has explicit dimensions */
 #fleetMap {
-  height: 400px !important;
-  width: 100% !important;
-  min-height: 400px;
-  z-index: 1;
-}
+  width: 100%;
+  height: 500px; /* Adjust this height (e.g., 400px, 600px, or 100vh) to fit your design */
+  min-height: 350px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);

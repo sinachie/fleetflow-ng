@@ -4,22 +4,31 @@ document.addEventListener('DOMContentLoaded', async () => {
   const statsEl = document.getElementById('eldStats');
   const routesEl = document.getElementById('routes');
 
-  // 1. Initialize Map with explicit size checks
-  map = L.map('fleetMap', { 
+  // 1. Initialize Map 
+  let map;
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const statsEl = document.getElementById('eldStats');
+  const routesEl = document.getElementById('routes');
+
+  // 1. Initialize Map
+  map = L.map('fleetMap', {
     scrollWheelZoom: false,
-    preferCanvas: true 
-  }).setView([6.5244, 3.3792], 7); 
+    preferCanvas: true
+  }).setView([6.5244, 3.3792], 7);
 
-  // 2. Force render after tab is visible
-  setTimeout(() => {
-    map.invalidateSize();
-  }, 400); 
-
-  // 3. Load Tiles
+  // 2. Load Tiles
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
-    attribution: '© OpenStreetMap'
-  }).addTo(map); 
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(map);
+
+  // 3. 🔥 THE MAGIC FIX: ResizeObserver
+  // This watches the map container. The moment it becomes visible on screen, it redraws.
+  const resizeObserver = new ResizeObserver(() => {
+    map.invalidateSize();
+  });
+  resizeObserver.observe(document.getElementById('fleetMap'));
   
 
   try {

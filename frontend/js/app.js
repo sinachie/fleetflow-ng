@@ -31,15 +31,12 @@ document.addEventListener('DOMContentLoaded', () => {
     mobileMenu.classList.remove('flex');
   }
 
-    // 5. 🔥 THE ULTIMATE LEAFLET FIX
-  if (id === 'eld' && window.map) {
-    // Force the browser to recalculate the layout of the map container
-    window.dispatchEvent(new Event('resize'));
     
-    // Call invalidateSize after a short delay to let the CSS apply
+  // Inside your showPage function in app.js
+  if (id === 'eld' && window.map) {
     setTimeout(() => {
-      window.map.invalidateSize();
-    }, 400); // 400ms gives the browser enough time to paint the div
+      window.map.invalidateSize(); 
+    }, 400);
   }
 
   // 6. Load Enterprise Data
