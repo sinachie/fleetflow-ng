@@ -3,10 +3,11 @@ const express = require('express');
 const cors = require('cors');
 const http = require('http');
 const { Server } = require('socket.io');
-const connectDB = require('./config/db');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const dns = require('dns'); // Added for Windows DNS fix
+const connectDB = require('./config/db');
+require('./utils/cronJobs'); // <-- THIS MUST BE HERE TO START THE TIMER
 
 // Force public DNS to fix local connection issues
 dns.setServers(['8.8.8.8', '1.1.1.1']);

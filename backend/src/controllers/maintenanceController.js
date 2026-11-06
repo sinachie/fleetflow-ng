@@ -4,7 +4,10 @@ const { predictStatus, suggestNextServiceDate } = require('../utils/predictor');
 
 exports.listMaintenance = async (req, res) => {
   try {
-    const list = await Maintenance.find().populate('vehicle', 'plateNumber model odometerKm');
+    // We add .populate('owner') so the frontend knows who owns the task
+    const list = await Maintenance.find()
+      .populate('vehicle', 'plateNumber model odometerKm')
+      .populate('owner', 'name email'); 
     res.json(list);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -13,7 +16,11 @@ exports.listMaintenance = async (req, res) => {
 
 exports.createMaintenance = async (req, res) => {
   try {
-    const record = await Maintenance.create(req.body);
+    // 🔥 CRITICAL FIX: We must attach the logged-in user's ID as the 'owner'
+    const record = await Maintenance.create({
+      ...req.body,
+      owner: req.user._id 
+    });
     res.status(201).json(record);
   } catch (err) {
     res.status(400).json({ message: err.message });

@@ -4,23 +4,37 @@ const Maintenance = require('../models/Maintenance');
 const User = require('../models/User');
 const { sendMaintenanceAlert } = require('./emailSender');
 
-// Run every day at 8:00 AM
+// Runs every day at 8:00 AM
 cron.schedule('0 8 * * *', async () => {
   console.log('🤖 Running daily predictive maintenance check...');
+  
   try {
-    const maintenances = await Maintenance.find({ status: { $ne: 'completed' } }).populate('vehicle').populate('owner');
+    // Find all tasks that are NOT completed and have a populated vehicle and owner
+    const tasks = await Maintenance.find({ status: { $ne: 'completed' } })
+      .populate('vehicle')
+      .populate('owner'); 
 
-    for (let m of maintenances) {
-      if (!m.vehicle) continue;
-      
-      const remainingKm = m.dueAtKm - m.vehicle.odometerKm;
-      
-      // If the vehicle is within 500km of needing service, send an alert
-      if (remainingKm <= 500 && remainingKm > 0 && m.owner) {
-        await sendMaintenanceAlert(m.owner.email, m.vehicle.plateNumber, m.serviceType, remainingKm);
+    for (const task of tasks) {
+      if (!task.vehicle || !task.owner) continue;
+
+      // Calculate remaining KM
+      const remainingKm = task.dueAtKm - (task.vehicle.odometerKm || 0);
+
+      // If the truck is within 500km of needing service, send the alert
+      if (remainingKm <= 500 && remainingKm > 0) {
+        await sendMaintenanceAlert(
+          task.owner.email,
+          task.vehicle.plateNumber,
+          task.serviceType,
+          remainingKm,
+          task.owner.name
+        );
       }
     }
   } catch (err) {
-    console.error('Cron error:', err);
+    console.error('❌ Cron job error:', err);
   }
+}, {
+  scheduled: true,
+  timezone: "Africa/Lagos"
 });
