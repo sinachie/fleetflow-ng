@@ -7,13 +7,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   
   const user = JSON.parse(userStr);
-  let myTruck = null; // Declare outside so both blocks can use it
+  let myTruck = null;
 
   // 1. Load the Driver's Assigned Vehicle
   try {
     const vehicles = await Api.get('/vehicles');
-    
-    // Find the vehicle where the driver ID matches this user
     myTruck = vehicles.find(v => v.driver && v.driver._id === user.id) || (vehicles.length > 0 ? vehicles[0] : null); 
     
     if (myTruck) {
@@ -25,41 +23,50 @@ document.addEventListener('DOMContentLoaded', async () => {
       
       window.currentTruckPlate = myTruck.plateNumber;
     } else {
-      // Fallback UI if no vehicle is assigned
       document.getElementById('driver-truck-name').innerText = 'No Vehicle Assigned';
       document.getElementById('driver-plate').innerText = '---';
-      document.getElementById('driver-model').innerText = 'Contact Admin to assign a truck.';
+      document.getElementById('driver-model').innerText = 'Contact Admin';
     }
   } catch (e) {
     console.error("Error loading vehicle:", e);
     document.getElementById('driver-truck-name').innerText = 'Error loading truck';
   }
 
-     // 2. Load Maintenance for this Driver
-  try {
-    const records = await Api.get('/maintenance');
+  // 2. Load Maintenance (Now a separate function to prevent hanging)
+  async function loadMaintenance() {
     const list = document.getElementById('driver-maintenance');
+    list.innerHTML = '<p class="text-slate-400 text-sm">Fetching tasks...</p>';
     
-    // Ensure records is an array
-    const recordsArray = Array.isArray(records) ? records : [];
-    
-    // Filter records to only show ones matching the driver's truck
-    const myRecords = myTruck ? recordsArray.filter(m => m.vehicle && m.vehicle._id === myTruck._id) : [];
+    try {
+      const records = await Api.get('/maintenance');
+      const recordsArray = Array.isArray(records) ? records : [];
+      
+      // Match by ID OR Plate Number to be 100% safe
+      const myRecords = myTruck ? recordsArray.filter(m => {
+        if (!m.vehicle) return false;
+        const vId = m.vehicle._id || m.vehicle;
+        const pNum = m.vehicle.plateNumber || '';
+        return vId === myTruck._id || pNum === myTruck.plateNumber;
+      }) : [];
 
-    if (myRecords.length === 0) {
-      list.innerHTML = '<p class="text-slate-400 text-sm">No maintenance tasks assigned to this truck.</p>';
-    } else {
-      list.innerHTML = myRecords.slice(0, 3).map(m => `
-        <div class="flex justify-between items-center border-b pb-2">
-          <p class="font-medium text-sm">${m.serviceType}</p>
-          <span class="text-xs px-2 py-1 rounded ${m.status === 'critical' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}">${m.status}</span>
-        </div>
-      `).join('');
+      if (myRecords.length === 0) {
+        list.innerHTML = '<p class="text-slate-400 text-sm">No tasks assigned to this truck.</p>';
+      } else {
+        list.innerHTML = myRecords.slice(0, 3).map(m => `
+          <div class="flex justify-between items-center border-b pb-2">
+            <p class="font-medium text-sm">${m.serviceType}</p>
+            <span class="text-xs px-2 py-1 rounded ${m.status === 'critical' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}">${m.status}</span>
+          </div>
+        `).join('');
+      }
+    } catch (e) { 
+      console.error("Error loading maintenance:", e);
+      list.innerHTML = '<p class="text-red-500 text-sm">Failed to load tasks.</p>';
     }
-  } catch (e) { 
-    console.error("Error loading maintenance:", e);
-    document.getElementById('driver-maintenance').innerHTML = '<p class="text-red-500 text-sm">Failed to load tasks.</p>';
   }
+  
+  // Call it immediately
+  loadMaintenance();
 
   // 3. Setup Real-Time Chat
   const socketUrl = 'https://fleetflow-backend-bmvz.onrender.com';
@@ -70,7 +77,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderDriverMessage(payload);
   });
 
-  // Load chat history
   try {
     const history = await Api.get('/messages');
     history.forEach(msg => {
@@ -88,7 +94,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const div = document.createElement('div');
     div.id = `msg-${payload.id}`;
     
-    // Driver view: Their messages are blue (right), Office is grey (left)
     const isMe = payload.role === 'driver';
     div.className = isMe ? 'chat-bubble-sent text-xs' : 'chat-bubble-received text-xs';
     div.innerHTML = `<p class="text-[9px] opacity-70 mb-1">${payload.author}</p>${payload.body}`;
