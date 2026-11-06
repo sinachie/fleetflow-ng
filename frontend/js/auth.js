@@ -63,17 +63,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await Api.post(endpoint, body);
 
       // Save token and user to localStorage
-      Api.setToken(data.token);
+            Api.setToken(data.token);
       localStorage.setItem('ff_user', JSON.stringify(data.user));
 
-      // ADD THIS CHECK:
+      // CHECK ROLE AND REDIRECT
       if (data.user.role === 'driver') {
-        window.location.href = 'driver.html';
+        window.location.href = 'driver.html'; // Send to Driver Portal
       } else {
         authScreen.classList.add('hidden');
-        window.location.reload();
+        window.location.reload(); // Stay on Admin Dashboard
       }
-
     } catch (err) {
       alert(`❌ Error: ${err.message}`);
       submitBtn.innerText = isLoginMode ? 'Log In' : 'Register';

@@ -62,12 +62,11 @@ exports.listVehicles = async (req, res) => {
   try {
     let query = {};
     
-    // If Admin, show all vehicles they own
     if (req.user.role === 'admin' || req.user.role === 'manager') {
+      // Admin sees all vehicles they own
       query = { owner: req.user._id };
-    } 
-    // If Driver, show ONLY the vehicle assigned to them
-    else if (req.user.role === 'driver') {
+    } else if (req.user.role === 'driver') {
+      // Driver ONLY sees the vehicle assigned to them
       query = { driver: req.user._id };
     }
 
