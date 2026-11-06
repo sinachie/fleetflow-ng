@@ -35,16 +35,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('driver-truck-name').innerText = 'Error loading truck';
   }
 
-  // 2. Load Maintenance for this Driver
+    // 2. Load Maintenance for this Driver
   try {
     const records = await Api.get('/maintenance');
     const list = document.getElementById('driver-maintenance');
     
-    // Filter records: Only show if it belongs to myTruck
-    const myRecords = myTruck ? records.filter(m => m.vehicle && m.vehicle._id === myTruck._id) : [];
+    // Ensure records is an array to prevent crashes
+    const recordsArray = Array.isArray(records) ? records : [];
+    
+    // Filter records to only show ones matching the driver's truck
+    const myRecords = myTruck ? recordsArray.filter(m => m.vehicle && m.vehicle._id === myTruck._id) : [];
 
     if (myRecords.length === 0) {
-      list.innerHTML = '<p class="text-slate-400 text-sm">No maintenance tasks assigned.</p>';
+      list.innerHTML = '<p class="text-slate-400 text-sm">No maintenance tasks assigned to this truck.</p>';
     } else {
       list.innerHTML = myRecords.slice(0, 3).map(m => `
         <div class="flex justify-between items-center border-b pb-2">
@@ -55,7 +58,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   } catch (e) { 
     console.error("Error loading maintenance:", e);
-    document.getElementById('driver-maintenance').innerHTML = '<p class="text-red-500 text-sm">Error loading maintenance.</p>';
+    document.getElementById('driver-maintenance').innerHTML = '<p class="text-red-500 text-sm">Error loading tasks. Refresh page.</p>';
   }
 
   // 3. Setup Real-Time Chat
