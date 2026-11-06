@@ -33,10 +33,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   try {
     const records = await Api.get('/maintenance');
     const list = document.getElementById('driver-maintenance');
-    if (records.length === 0) {
+    
+    // Filter records to only show ones matching the driver's truck
+    const myRecords = records.filter(m => m.vehicle && myTruck && m.vehicle._id === myTruck._id);
+
+    if (myRecords.length === 0) {
       list.innerHTML = '<p class="text-slate-400">No maintenance tasks assigned.</p>';
     } else {
-      list.innerHTML = records.slice(0, 3).map(m => `
+      list.innerHTML = myRecords.slice(0, 3).map(m => `
         <div class="flex justify-between items-center border-b pb-2">
           <p class="font-medium">${m.serviceType}</p>
           <span class="text-xs px-2 py-1 rounded ${m.status === 'critical' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}">${m.status}</span>

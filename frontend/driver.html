@@ -45,11 +45,13 @@
       </div>
     </div>
 
-    <!-- Quick Comms -->
+        <!-- Quick Comms -->
     <div class="bg-white rounded-xl shadow p-5">
       <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Message Office</h2>
       <div id="driver-chat-log" class="h-40 overflow-y-auto space-y-2 text-sm mb-3 bg-slate-50 p-2 rounded-lg"></div>
-      <div class="flex gap-2">
+      
+      <!-- FIXED INPUT WRAPPER -->
+      <div class="flex gap-2 bg-white pt-2 border-t border-slate-100">
         <input id="driver-chat-input" type="text" placeholder="Type message..." class="flex-1 border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" />
         <button onclick="sendDriverMessage()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700">Send</button>
       </div>

@@ -60,7 +60,17 @@ exports.createVehicle = async (req, res) => {
 // 2. List Vehicles
 exports.listVehicles = async (req, res) => {
   try {
-    const query = req.user.role === 'admin' ? {} : { owner: req.user._id };
+    let query = {};
+    
+    // If Admin, show all vehicles they own
+    if (req.user.role === 'admin' || req.user.role === 'manager') {
+      query = { owner: req.user._id };
+    } 
+    // If Driver, show ONLY the vehicle assigned to them
+    else if (req.user.role === 'driver') {
+      query = { driver: req.user._id };
+    }
+
     const vehicles = await Vehicle.find(query).populate('driver', 'name email phone');
     res.json(vehicles);
   } catch (err) {
