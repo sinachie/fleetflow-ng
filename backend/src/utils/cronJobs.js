@@ -5,7 +5,7 @@ const User = require('../models/User');
 const { sendMaintenanceAlert } = require('./emailSender');
 
 // Runs every day at 8:00 AM
-cron.schedule('0 8 * * *', async () => {
+cron.schedule('* * * * *', async () => {
   console.log('🤖 Running daily predictive maintenance check...');
   
   try {
