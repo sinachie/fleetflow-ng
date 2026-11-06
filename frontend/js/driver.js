@@ -35,12 +35,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('driver-truck-name').innerText = 'Error loading truck';
   }
 
-    // 2. Load Maintenance for this Driver
+     // 2. Load Maintenance for this Driver
   try {
     const records = await Api.get('/maintenance');
     const list = document.getElementById('driver-maintenance');
     
-    // Ensure records is an array to prevent crashes
+    // Ensure records is an array
     const recordsArray = Array.isArray(records) ? records : [];
     
     // Filter records to only show ones matching the driver's truck
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   } catch (e) { 
     console.error("Error loading maintenance:", e);
-    document.getElementById('driver-maintenance').innerHTML = '<p class="text-red-500 text-sm">Error loading tasks. Refresh page.</p>';
+    document.getElementById('driver-maintenance').innerHTML = '<p class="text-red-500 text-sm">Failed to load tasks.</p>';
   }
 
   // 3. Setup Real-Time Chat
