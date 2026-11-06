@@ -119,3 +119,18 @@ exports.updateLocation = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+exports.updateDriverStats = async (req, res) => {
+  try {
+    const { odometerKm, fuelLiters } = req.body;
+    const vehicle = await Vehicle.findOneAndUpdate(
+      { driver: req.user._id }, // Finds the truck assigned to this driver
+      { odometerKm, fuelLiters },
+      { new: true }
+    );
+    if (!vehicle) return res.status(404).json({ message: 'No vehicle assigned to you.' });
+    res.json({ message: 'Stats updated successfully', vehicle });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

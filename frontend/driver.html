@@ -32,6 +32,24 @@
       </div>
     </div>
 
+        <!-- Update Stats Form -->
+    <div class="bg-white rounded-xl shadow p-4 mb-4">
+      <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Update Truck Stats</h2>
+      <div class="flex gap-2">
+        <div class="flex-1">
+          <label class="text-[10px] text-slate-500">Odometer (km)</label>
+          <input type="number" id="update-odo" class="w-full border rounded-lg px-2 py-1 text-sm" placeholder="e.g. 50000">
+        </div>
+        <div class="flex-1">
+          <label class="text-[10px] text-slate-500">Fuel (Liters)</label>
+          <input type="number" id="update-fuel" class="w-full border rounded-lg px-2 py-1 text-sm" placeholder="e.g. 150">
+        </div>
+        <div class="flex items-end">
+          <button onclick="updateTruckStats()" class="bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs font-bold h-[30px]">Save</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Share Location Button -->
     <button onclick="shareDriverLocation()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg transition-colors flex justify-center items-center gap-2">
       📍 Share My Location with Office

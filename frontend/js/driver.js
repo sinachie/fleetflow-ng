@@ -143,3 +143,17 @@ window.logoutDriver = () => {
   localStorage.removeItem('ff_user');
   window.location.href = 'index.html';
 };
+
+window.updateTruckStats = async () => {
+  const odo = document.getElementById('update-odo').value;
+  const fuel = document.getElementById('update-fuel').value;
+  if (!odo || !fuel) return alert("Please enter both values.");
+
+  try {
+    await Api.put('/vehicles/driver-update', { odometerKm: odo, fuelLiters: fuel });
+    alert("Truck stats updated!");
+    window.location.reload();
+  } catch (e) {
+    alert(`Error: ${e.message}`);
+  }
+};

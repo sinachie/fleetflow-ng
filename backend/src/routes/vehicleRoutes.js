@@ -7,7 +7,8 @@ const {
   getVehicle,
   updateVehicle,
   deleteVehicle,
-  updateLocation
+  updateLocation,
+  updateDriverStats
 } = require('../controllers/vehicleController');
 
 const { protect, authorize } = require('../middleware/auth');
@@ -23,6 +24,7 @@ router.route('/:id')
   .put(protect, authorize('admin', 'manager'), updateVehicle)
   .delete(protect, authorize('admin'), deleteVehicle);
 
-router.post('/update-location', protect, updateLocation);  
+router.post('/update-location', protect, updateLocation);
+router.put('/driver-update', protect, authorize('driver'), updateDriverStats); 
 
 module.exports = router;

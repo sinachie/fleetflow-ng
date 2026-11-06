@@ -90,7 +90,13 @@ exports.createTrip = async (req, res) => {
 
 exports.listTrips = async (req, res) => {
   try {
-    const trips = await Trip.find().populate('vehicle', 'plateNumber model');
+    let query = {};
+    // If user is a driver, only find trips for their assigned truck
+    if (req.user.role === 'driver') {
+      const vehicle = await require('../models/Vehicle').findOne({ driver: req.user._id });
+      if (vehicle) query = { vehicle: vehicle._id };
+    }
+    const trips = await Trip.find(query).populate('vehicle', 'plateNumber model');
     res.json(trips);
   } catch (err) {
     res.status(500).json({ message: err.message });
