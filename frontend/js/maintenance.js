@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           <div>
             <p class="font-medium text-slate-800">${m.vehicle?.plateNumber || 'Unknown'} • ${m.serviceType}</p>
             <p class="text-xs text-slate-500">Due: ${m.dueAtKm ? m.dueAtKm + ' km' : 'N/A'}</p>
+            <p class="text-xs text-blue-500 mt-1 font-semibold">👤 Owner: ${m.owner ? m.owner.name : 'Unassigned'}</p>
           </div>
           <div class="flex items-center gap-2">
             <span class="text-xs px-2 py-1 rounded ${
