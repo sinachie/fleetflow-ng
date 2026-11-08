@@ -310,9 +310,9 @@
       <h2 class="text-xl font-bold text-blue-900 mb-4">Driver ↔ Office Comms</h2>
       <div class="bg-white rounded-xl shadow p-4 flex flex-col h-[480px]">
         <div id="chatLog" class="flex-1 overflow-y-auto space-y-2 text-sm mb-3"></div>
-        <div class="flex gap-2">
+          <div class="flex gap-2 w-full"> <!-- ADDED w-full -->
           <input id="chatInput" type="text" placeholder="Type message…" class="flex-1 border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-400" />
-          <button id="sendBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700">Send</button>
+          <button id="sendBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 whitespace-nowrap">Send</button> <!-- ADDED whitespace-nowrap -->
         </div>
       </div>
     </div>
@@ -381,7 +381,9 @@
         </div>
         <div class="flex gap-2">
           <a href="tel:+2348037937911" class="flex-1 bg-white text-blue-900 text-center py-2 rounded-lg text-sm font-bold hover:bg-blue-50">📞 Call 24/7</a>
-          <a href="https://wa.me/2348037937911" class="flex-1 bg-green-500 text-white text-center py-2 rounded-lg text-sm font-bold hover:bg-green-600">💬 WhatsApp</a>
+          <a href="https://wa.me/2348037937911" class="flex-1 bg-green-500 text-white text-center py-2 rounded-lg text-sm font-bold hover:bg-green-600 transition-colors">
+            💬 WhatsApp
+          </a>
         </div>
       </div>
     </div>

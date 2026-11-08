@@ -31,7 +31,10 @@ async function loadBilling() {
       </div>
 
       <div class="flex gap-4">
-        <button onclick="window.location.href='#subscription'" class="bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700">Upgrade Plan</button>
+        ${sub.plan !== 'enterprise' ? 
+          `<button onclick="window.location.href='#subscription'" class="bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700">Upgrade Plan</button>` 
+          : `<button onclick="window.location.href='#subscription'" class="bg-slate-200 text-slate-700 px-6 py-2 rounded-lg text-sm font-semibold hover:bg-slate-300">View Plans</button>`
+        }
         <button onclick="cancelPlan()" class="border border-red-500 text-red-500 px-6 py-2 rounded-lg text-sm font-semibold hover:bg-red-50">Cancel Subscription</button>
       </div>
     `;
