@@ -177,7 +177,7 @@ function shareLocation(plateNumber) {
   });
 }
 
-// --- LOG FUEL FUNCTIONS ---
+// --- LOG FUEL FUNCTIONS (Now only declared ONCE) ---
 async function openFuelModal() {
   document.getElementById('fuelModal').classList.remove('hidden');
   document.getElementById('fuelModal').classList.add('flex');
