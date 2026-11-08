@@ -176,3 +176,47 @@ function shareLocation(plateNumber) {
     alert("Unable to retrieve your location. Please allow location access.");
   });
 }
+
+// --- LOG FUEL FUNCTIONS ---
+async function openFuelModal() {
+  document.getElementById('fuelModal').classList.remove('hidden');
+  document.getElementById('fuelModal').classList.add('flex');
+  
+  const select = document.getElementById('f-vehicle');
+  try {
+    const vehicles = await Api.get('/vehicles');
+    select.innerHTML = vehicles.map(v => 
+      `<option value="${v._id}">${v.plateNumber} - ${v.model} (Last Odo: ${v.odometerKm} km)</option>`
+    ).join('');
+  } catch (e) { console.log(e); }
+}
+
+function closeFuelModal() {
+  document.getElementById('fuelModal').classList.add('hidden');
+  document.getElementById('fuelModal').classList.remove('flex');
+  document.getElementById('logFuelForm').reset();
+}
+
+document.getElementById('logFuelForm')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = e.target.querySelector('button[type="submit"]');
+  btn.innerText = 'Saving...';
+  btn.disabled = true;
+
+  const data = {
+    vehicleId: document.getElementById('f-vehicle').value,
+    liters: document.getElementById('f-liters').value,
+    currentOdometer: document.getElementById('f-odometer').value
+  };
+
+  try {
+    await Api.post('/vehicles/log-fuel', data);
+    alert('Fuel logged successfully!');
+    closeFuelModal();
+    window.location.reload(); // Reload to show new efficiency
+  } catch (error) {
+    alert(`❌ ${error.message}`);
+    btn.innerText = 'Save Fuel Log';
+    btn.disabled = false;
+  }
+});
