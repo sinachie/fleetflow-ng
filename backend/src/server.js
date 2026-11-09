@@ -107,3 +107,15 @@ const PORT = process.env.PORT || 5000;
     console.log('© 2026 All Rights Reserved');
   });
 })();
+
+// --- GLOBAL ERROR CATCHERS ---
+process.on('unhandledRejection', (err) => {
+  console.error('❌ UNHANDLED REJECTION! Shutting down...');
+  console.error(err.name, err.message);
+  // We do NOT exit the process here. We log it and let Render keep the server alive.
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('❌ UNCAUGHT EXCEPTION! Shutting down...');
+  console.error(err.name, err.message);
+});
