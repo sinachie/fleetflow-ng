@@ -113,9 +113,10 @@ exports.paystackWebhook = async (req, res) => {
   }
 };
 
-exports.listSubscriptions = async (_req, res) => {
+exports.listSubscriptions = async (req, res) => {
   try {
-    const subs = await Subscription.find().sort({ createdAt: -1 });
+    // Only show subscriptions for this specific user
+    const subs = await Subscription.find({ user: req.user._id }).sort({ createdAt: -1 });
     res.json(subs);
   } catch (err) {
     res.status(500).json({ message: err.message });

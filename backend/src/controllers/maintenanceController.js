@@ -4,8 +4,8 @@ const { predictStatus, suggestNextServiceDate } = require('../utils/predictor');
 
 exports.listMaintenance = async (req, res) => {
   try {
-    // We add .populate('owner') so the frontend knows who owns the task
-    const list = await Maintenance.find()
+    // Filter by the logged-in user's ID
+    const list = await Maintenance.find({ owner: req.user._id }) 
       .populate('vehicle', 'plateNumber model odometerKm')
       .populate('owner', 'name email'); 
     res.json(list);
