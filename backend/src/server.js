@@ -5,9 +5,9 @@ const http = require('http');
 const { Server } = require('socket.io');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const dns = require('dns'); // Added for Windows DNS fix
+const dns = require('dns');
 const connectDB = require('./config/db');
-require('./utils/cronJobs'); // <-- THIS MUST BE HERE TO START THE TIMER
+require('./utils/cronJobs'); 
 
 // Force public DNS to fix local connection issues
 dns.setServers(['8.8.8.8', '1.1.1.1']);
@@ -83,20 +83,15 @@ app.use('/api/eld', require('./routes/eldRoutes'));
 app.use('/api/subscriptions', require('./routes/subscriptionRoutes'));
 app.use('/api/trips', require('./routes/tripRoutes'));
 
-// 5. Socket.IO Real-Time Logic (Cleaned up)
+// 5. Socket.IO Real-Time Logic
 io.on('connection', (socket) => {
-  // 1. Get the company from the frontend connection URL
   const company = socket.handshake.query.company;
   
   if (company) {
-    socket.join(company); // 2. Put them in a private room for their company
+    socket.join(company); 
     console.log(`🔌 Client joined company room: ${company}`);
   }
 
-  socket.on('disconnect', () => console.log('❌ Disconnected:', socket.id));
-});
-
-  // The broadcasting is now handled by the messageController
   socket.on('disconnect', () => console.log('❌ Disconnected:', socket.id));
 });
 
@@ -121,7 +116,6 @@ const PORT = process.env.PORT || 5000;
 process.on('unhandledRejection', (err) => {
   console.error('❌ UNHANDLED REJECTION! Shutting down...');
   console.error(err.name, err.message);
-  // We do NOT exit the process here. We log it and let Render keep the server alive.
 });
 
 process.on('uncaughtException', (err) => {
