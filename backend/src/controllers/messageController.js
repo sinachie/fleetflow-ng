@@ -2,13 +2,12 @@ const Message = require('../models/Message');
 
 exports.listMessages = async (req, res) => {
   try {
-    // Fetch the last 50 messages, populate the sender's name and role
-    const msgs = await Message.find()
+    // Only fetch messages where the company matches the logged-in user's company
+    const msgs = await Message.find({ company: req.user.company })
       .populate('from', 'name role')
       .sort({ createdAt: -1 })
       .limit(50);
       
-    // Reverse the array so the oldest message is at the top of the chat
     res.json(msgs.reverse());
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -17,25 +16,24 @@ exports.listMessages = async (req, res) => {
 
 exports.sendMessage = async (req, res) => {
   try {
-    // 1. Save the message to MongoDB
+    // Save the message WITH the company name
     const msg = await Message.create({
       from: req.user._id,
       body: req.body.body,
+      company: req.user.company, // <-- CRITICAL FIX
     });
 
-    // 2. Populate the sender's info so the frontend knows who it is
     const populatedMsg = await msg.populate('from', 'name role');
 
-    // 3. Broadcast to everyone via Socket.IO
+    // Broadcast ONLY to the room for this company
     const io = req.app.get('io');
-    io.emit('chat:message', {
+    io.to(req.user.company).emit('chat:message', {
       id: populatedMsg._id,
       author: populatedMsg.from.name,
       role: populatedMsg.from.role,
       body: populatedMsg.body,
     });
 
-    // 4. Send success back to the sender
     res.status(201).json(populatedMsg);
   } catch (err) {
     res.status(400).json({ message: err.message });

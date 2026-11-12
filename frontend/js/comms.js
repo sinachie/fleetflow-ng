@@ -4,8 +4,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   const btn = document.getElementById('sendBtn');
 
   // Connect to Socket.IO on Render
+  const user = JSON.parse(localStorage.getItem('ff_user'));
   const socketUrl = 'https://fleetflow-backend-bmvz.onrender.com';
-  const socket = io(socketUrl, { transports: ['websocket', 'polling'] });
+  
+  // ADD THE QUERY PARAMETER
+  const socket = io(socketUrl, { 
+    transports: ['websocket', 'polling'],
+    query: { company: user.company } 
+  });
+  
 
   socket.on('connect', () => console.log('🟢 Comms connected'));
 

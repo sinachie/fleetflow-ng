@@ -6,10 +6,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
   
+  // 1. Declare user ONCE at the top
   const user = JSON.parse(userStr);
   let myTruck = null;
 
-  // 1. Load the Driver's Assigned Vehicle
+  // 2. Load the Driver's Assigned Vehicle
   try {
     const vehicles = await Api.get('/vehicles');
     myTruck = vehicles.find(v => v.driver && v.driver._id === user.id) || (vehicles.length > 0 ? vehicles[0] : null); 
@@ -32,7 +33,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('driver-truck-name').innerText = 'Error loading truck';
   }
 
-  // 2. Load Maintenance (Now a separate function to prevent hanging)
+  // 3. Load Maintenance
   async function loadMaintenance() {
     const list = document.getElementById('driver-maintenance');
     list.innerHTML = '<p class="text-slate-400 text-sm">Fetching tasks...</p>';
@@ -41,7 +42,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       const records = await Api.get('/maintenance');
       const recordsArray = Array.isArray(records) ? records : [];
       
-      // Match by ID OR Plate Number to be 100% safe
       const myRecords = myTruck ? recordsArray.filter(m => {
         if (!m.vehicle) return false;
         const vId = m.vehicle._id || m.vehicle;
@@ -65,12 +65,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
   
-  // Call it immediately
   loadMaintenance();
 
-  // 3. Setup Real-Time Chat
+  // 4. Setup Real-Time Chat (Uses the 'user' declared at the top)
   const socketUrl = 'https://fleetflow-backend-bmvz.onrender.com';
-  const socket = io(socketUrl, { transports: ['websocket', 'polling'] });
+  const socket = io(socketUrl, { 
+    transports: ['websocket', 'polling'],
+    query: { company: user.company } // Now this works perfectly
+  });
+
   const chatLog = document.getElementById('driver-chat-log');
 
   socket.on('chat:message', (payload) => {
@@ -110,7 +113,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   };
 });
 
-// 4. Location Sharing Logic
+// --- OUTSIDE FUNCTIONS (Must stay outside DOMContentLoaded) ---
+
 window.shareDriverLocation = () => {
   if (!navigator.geolocation) return alert("GPS not supported on this device.");
   if (!window.currentTruckPlate) return alert("You need an assigned vehicle to share location.");
@@ -137,7 +141,6 @@ window.shareDriverLocation = () => {
   });
 };
 
-// 5. Logout
 window.logoutDriver = () => {
   localStorage.removeItem('ff_token');
   localStorage.removeItem('ff_user');

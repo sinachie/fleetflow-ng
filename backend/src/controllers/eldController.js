@@ -1,11 +1,23 @@
 const Vehicle = require('../models/Vehicle');
-const Trip = require('../models/Trip'); // Import the Trip model
+const Trip = require('../models/Trip'); 
 
 exports.fleetAnalytics = async (req, res) => {
   try {
-    const vehicles = await Vehicle.find();
+    const vehicles = await Vehicle.find({ owner: req.user._id }); 
+    
+    if (vehicles.length === 0) {
+      return res.json({
+        totalVehicles: 0,
+        totalDistanceKm: 0,
+        totalFuelLiters: 0,
+        avgEfficiencyKmPerL: 0,
+        co2SavedTons: 0,
+        routeSuggestions: []
+      });
+    }
+
     const totalDistance = vehicles.reduce((s, v) => s + (v.odometerKm || 0), 0);
-    const totalFuel = vehicles.reduce((s, v) => s + (v.fuelLiters || 0), 0) + 66000; 
+    const totalFuel = vehicles.reduce((s, v) => s + (v.fuelLiters || 0), 0);
     const avgEfficiency = totalFuel > 0 ? totalDistance / totalFuel : 0;
 
     // FETCH REAL TRIPS FROM THE DATABASE

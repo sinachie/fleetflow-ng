@@ -85,7 +85,16 @@ app.use('/api/trips', require('./routes/tripRoutes'));
 
 // 5. Socket.IO Real-Time Logic (Cleaned up)
 io.on('connection', (socket) => {
-  console.log('🔌 Client connected:', socket.id);
+  // 1. Get the company from the frontend connection URL
+  const company = socket.handshake.query.company;
+  
+  if (company) {
+    socket.join(company); // 2. Put them in a private room for their company
+    console.log(`🔌 Client joined company room: ${company}`);
+  }
+
+  socket.on('disconnect', () => console.log('❌ Disconnected:', socket.id));
+});
 
   // The broadcasting is now handled by the messageController
   socket.on('disconnect', () => console.log('❌ Disconnected:', socket.id));
