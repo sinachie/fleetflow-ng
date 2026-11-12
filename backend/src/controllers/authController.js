@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const User = require('../models/User');
 
 const signToken = (id) =>
@@ -12,11 +13,25 @@ exports.register = async (req, res) => {
     if (existing) return res.status(400).json({ message: 'Email already in use' });
 
     const hashed = await bcrypt.hash(password, 10);
-    const user = await User.create({ name, email, password: hashed, role, phone, company });
+    
+    // Generate a unique company ID for the first user registering this company
+    const companyId = crypto.randomBytes(8).toString('hex'); 
+
+    const user = await User.create({ 
+      name, email, password: hashed, role, phone, company, companyId 
+    });
+    
     const token = signToken(user._id);
     res.status(201).json({
       token,
-      user: { id: user._id, name: user.name, email: user.email, role: user.role },
+      user: { 
+        id: user._id, 
+        name: user.name, 
+        email: user.email, 
+        role: user.role,
+        company: user.company,
+        companyId: user.companyId 
+      },
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -35,7 +50,14 @@ exports.login = async (req, res) => {
     const token = signToken(user._id);
     res.json({
       token,
-      user: { id: user._id, name: user.name, email: user.email, role: user.role },
+      user: { 
+        id: user._id, 
+        name: user.name, 
+        email: user.email, 
+        role: user.role,
+        company: user.company,
+        companyId: user.companyId // <-- CRITICAL: Send companyId on login
+      },
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -45,8 +67,6 @@ exports.login = async (req, res) => {
 exports.me = async (req, res) => {
   res.json(req.user);
 };
-
-const crypto = require('crypto');
 
 exports.generateApiKey = async (req, res) => {
   try {
@@ -68,11 +88,10 @@ exports.updateErpUrl = async (req, res) => {
   }
 };
 
-// Get all users in the same company
+// Get all users in the same company (using companyId)
 exports.getTeam = async (req, res) => {
   try {
-    // Finds all users with the same company name as the logged-in admin
-    const team = await User.find({ company: req.user.company }).select('-password');
+    const team = await User.find({ companyId: req.user.companyId }).select('-password');
     res.json(team);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -84,21 +103,18 @@ exports.createTeamMember = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
-    // 1. Check if email already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).json({ message: 'Email already in use' });
 
-    // 2. Hash password
-    const bcrypt = require('bcryptjs');
     const hashed = await bcrypt.hash(password, 10);
 
-    // 3. Create the user, assigning them to the Admin's company
     const newUser = await User.create({
       name,
       email,
       password: hashed,
-      role: role, // 'driver' or 'manager'
-      company: req.user.company // This links them to the Admin's company
+      role, 
+      company: req.user.company,
+      companyId: req.user.companyId // <-- INHERIT THE COMPANY ID
     });
 
     res.status(201).json({ message: 'Team member created successfully', user: newUser });

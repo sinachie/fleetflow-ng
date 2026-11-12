@@ -8,9 +8,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   const socketUrl = 'https://fleetflow-backend-bmvz.onrender.com';
   
   // ADD THE QUERY PARAMETER
-  const socket = io(socketUrl, { 
+   const socket = io(socketUrl, { 
     transports: ['websocket', 'polling'],
-    query: { company: user.company } 
+    query: { companyId: user.companyId } 
   });
   
 

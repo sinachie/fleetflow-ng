@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const socketUrl = 'https://fleetflow-backend-bmvz.onrender.com';
   const socket = io(socketUrl, { 
     transports: ['websocket', 'polling'],
-    query: { company: user.company } // Now this works perfectly
+    query: { companyId: user.companyId }
   });
 
   const chatLog = document.getElementById('driver-chat-log');

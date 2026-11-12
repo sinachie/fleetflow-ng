@@ -2,8 +2,7 @@ const Message = require('../models/Message');
 
 exports.listMessages = async (req, res) => {
   try {
-    // Only fetch messages where the company matches the logged-in user's company
-    const msgs = await Message.find({ company: req.user.company })
+    const msgs = await Message.find({ companyId: req.user.companyId })
       .populate('from', 'name role')
       .sort({ createdAt: -1 })
       .limit(50);
@@ -16,18 +15,17 @@ exports.listMessages = async (req, res) => {
 
 exports.sendMessage = async (req, res) => {
   try {
-    // Save the message WITH the company name
     const msg = await Message.create({
       from: req.user._id,
       body: req.body.body,
-      company: req.user.company, // <-- CRITICAL FIX
+      companyId: req.user.companyId, // <-- USE COMPANY ID
     });
 
     const populatedMsg = await msg.populate('from', 'name role');
 
-    // Broadcast ONLY to the room for this company
     const io = req.app.get('io');
-    io.to(req.user.company).emit('chat:message', {
+    // Broadcast to the room named after the companyId
+    io.to(req.user.companyId).emit('chat:message', {
       id: populatedMsg._id,
       author: populatedMsg.from.name,
       role: populatedMsg.from.role,

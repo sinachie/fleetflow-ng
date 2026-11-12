@@ -85,11 +85,11 @@ app.use('/api/trips', require('./routes/tripRoutes'));
 
 // 5. Socket.IO Real-Time Logic
 io.on('connection', (socket) => {
-  const company = socket.handshake.query.company;
+const companyId = socket.handshake.query.companyId;
   
-  if (company) {
-    socket.join(company); 
-    console.log(`🔌 Client joined company room: ${company}`);
+  if (companyId) {
+    socket.join(companyId); 
+    console.log(`🔌 Client joined company room: ${companyId}`);
   }
 
   socket.on('disconnect', () => console.log('❌ Disconnected:', socket.id));
