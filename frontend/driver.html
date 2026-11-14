@@ -19,22 +19,23 @@
     <button onclick="logoutDriver()" class="text-xs bg-red-500 hover:bg-red-600 px-3 py-1.5 rounded-lg font-semibold transition-colors">Log Out</button>
   </header>
 
-  <!-- Driver Content -->
+    <!-- Driver Content -->
   <main class="flex-1 overflow-y-auto p-4 pb-24 space-y-4">
     
     <!-- Truck Status Card -->
     <div class="bg-white rounded-xl shadow p-5 border-l-4 border-blue-500">
       <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">My Vehicle</h2>
       <p class="text-2xl font-bold text-blue-900" id="driver-plate">---</p>
-      <p class="text-sm text-slate-500" id="driver-model">---</p>
-      <div class="mt-3 flex gap-4 text-sm">
+      <p class="text-sm text-slate-500 mb-3" id="driver-model">---</p>
+      
+      <div class="flex gap-4 text-sm bg-slate-50 p-3 rounded-lg">
         <div><span class="text-slate-400">Odometer:</span> <span class="font-semibold" id="driver-odo">0 km</span></div>
         <div><span class="text-slate-400">Fuel:</span> <span class="font-semibold" id="driver-fuel">0 L</span></div>
       </div>
     </div>
 
-        <!-- Update Stats Form -->
-    <div class="bg-white rounded-xl shadow p-4 mb-4">
+    <!-- Update Stats Form -->
+    <div class="bg-white rounded-xl shadow p-4">
       <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Update Truck Stats</h2>
       <div class="flex gap-2">
         <div class="flex-1">
@@ -51,8 +52,8 @@
       </div>
     </div>
 
-        <!-- Automatic Location Tracking Status -->
-    <div class="w-full bg-green-50 border border-green-200 text-green-700 font-bold py-4 rounded-xl shadow-sm flex justify-center items-center gap-2">
+    <!-- Live Tracking Status -->
+    <div class="w-full bg-green-50 border border-green-200 text-green-700 font-bold py-3 rounded-xl shadow-sm flex justify-center items-center gap-2">
       <span class="relative flex h-3 w-3">
         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
         <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
@@ -68,15 +69,16 @@
       </div>
     </div>
 
-        <!-- Quick Comms -->
+    <!-- Quick Comms (FIXED LAYOUT) -->
     <div class="bg-white rounded-xl shadow p-5">
       <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Message Office</h2>
-      <div id="driver-chat-log" class="h-40 overflow-y-auto space-y-2 text-sm mb-3 bg-slate-50 p-2 rounded-lg"></div>
       
-      <!-- FIXED INPUT WRAPPER -->
-      <div class="flex gap-2 bg-white pt-2 border-t border-slate-100">
+      <!-- Added flex flex-col to fix chat bubbles -->
+      <div id="driver-chat-log" class="h-48 overflow-y-auto space-y-2 text-sm mb-3 bg-slate-50 p-3 rounded-lg flex flex-col"></div>
+      
+      <div class="flex gap-2 w-full">
         <input id="driver-chat-input" type="text" placeholder="Type message..." class="flex-1 border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" />
-        <button onclick="sendDriverMessage()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700">Send</button>
+        <button onclick="sendDriverMessage()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 whitespace-nowrap">Send</button>
       </div>
     </div>
 
