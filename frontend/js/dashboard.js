@@ -3,22 +3,35 @@ document.addEventListener('DOMContentLoaded', async () => {
   const predEl = document.getElementById('predictions');
 
   try {
-    const vehicles = await Api.get('/vehicles').catch(() => []);
-    const total = vehicles.length;
-    const active = vehicles.filter((v) => v.status === 'active').length;
-    const critical = vehicles.filter((v) => v.status === 'critical').length;
-    const avgEff =
-      vehicles.length > 0
-        ? (vehicles.reduce((s, v) => s + (v.fuelEfficiency || 0), 0) / vehicles.length).toFixed(1)
-        : '0.0';
+    // 1. Fetch Vehicles and Trips simultaneously for speed
+    const [vehicles, trips] = await Promise.all([
+      Api.get('/vehicles'),
+      Api.get('/trips').catch(() => []) // Fallback to empty array if trips fail
+    ]);
 
+    const totalVehicles = vehicles.length;
+    const criticalVehicles = vehicles.filter(v => v.status === 'critical').length;
+    
+    // Count active trips (scheduled or in-progress)
+    const activeTrips = trips.filter(t => t.status === 'scheduled' || t.status === 'in-progress').length;
+
+    // Calculate Avg Efficiency (Only count vehicles that have > 0 efficiency)
+    const vehiclesWithEfficiency = vehicles.filter(v => v.fuelEfficiency > 0);
+    let avgEff = 0.0;
+    if (vehiclesWithEfficiency.length > 0) {
+      const totalEff = vehiclesWithEfficiency.reduce((sum, v) => sum + v.fuelEfficiency, 0);
+      avgEff = (totalEff / vehiclesWithEfficiency.length).toFixed(1);
+    }
+
+    // 2. Render Stats
     statsEl.innerHTML = [
-      statCard('Total Vehicles', total, 'text-blue-800'),
-      statCard('Active Trips', active, 'text-green-600'),
-      statCard('Critical', critical, 'text-red-600'),
+      statCard('Total Vehicles', totalVehicles, 'text-blue-800'),
+      statCard('Active Trips', activeTrips, 'text-green-600'),
+      statCard('Critical', criticalVehicles, 'text-red-600'),
       statCard('Avg Efficiency', `${avgEff} km/L`, 'text-blue-800'),
     ].join('');
 
+    // 3. Render Predictive Maintenance Alerts (Top 5)
     predEl.innerHTML = vehicles.slice(0, 5).map((v) => `
       <div class="flex justify-between items-center border-b py-2">
         <div>
@@ -32,6 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }">${v.status || 'idle'}</span>
       </div>
     `).join('') || '<p class="text-slate-400">No vehicles yet.</p>';
+
   } catch (e) {
     statsEl.innerHTML = `<p class="text-red-500 text-sm col-span-4">${e.message}</p>`;
   }
