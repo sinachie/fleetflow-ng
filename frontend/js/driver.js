@@ -160,3 +160,35 @@ window.updateTruckStats = async () => {
     alert(`Error: ${e.message}`);
   }
 };
+
+// Auto-Ping GPS every 2 minutes
+function startAutoTracking() {
+  if (!navigator.geolocation) return;
+  
+  const pingLocation = () => {
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      try {
+        const user = JSON.parse(localStorage.getItem('ff_user'));
+        // We don't need the plate number, the backend finds it by the driver's ID
+        await Api.post('/vehicles/update-location', {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        });
+        console.log('📍 Location pinged successfully');
+      } catch (e) {
+        console.log('Location ping failed', e);
+      }
+    });
+  };
+
+  // Ping immediately on load
+  pingLocation();
+  
+  // Then ping every 2 minutes (120,000 ms)
+  setInterval(pingLocation, 120000); 
+}
+
+// Start tracking when driver page loads
+document.addEventListener('DOMContentLoaded', () => {
+  startAutoTracking();
+});

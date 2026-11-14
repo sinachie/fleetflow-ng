@@ -7,7 +7,8 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const dns = require('dns');
 const connectDB = require('./config/db');
-require('./utils/cronJobs'); 
+require('./utils/cronJobs');
+require('./utils/idleMonitor'); 
 
 // Force public DNS to fix local connection issues
 dns.setServers(['8.8.8.8', '1.1.1.1']);

@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   // 1. Fetch drivers for the assignment dropdown
   try {
     const team = await Api.get('/auth/team');
-    // Filter to only show users with the 'driver' role
     allDrivers = team.filter(u => u.role === 'driver');
   } catch (e) { 
     console.log("Could not load drivers", e); 
@@ -28,12 +27,20 @@ document.addEventListener('DOMContentLoaded', async () => {
           driverOptions += `<option value="${d._id}" ${isSelected}>${d.name}</option>`;
         });
 
+        // 🔥 THE FIX: Calculate offline status INSIDE the map function
+        const isOffline = v.lastLocationUpdate && (new Date() - new Date(v.lastLocationUpdate)) > 5 * 60 * 1000;
+        const statusText = isOffline 
+          ? `<span class="text-red-500 font-bold text-xs ml-2">● OFFLINE</span>` 
+          : `<span class="text-green-500 font-bold text-xs ml-2">● LIVE</span>`;
+
         return `
         <tr class="border-t hover:bg-blue-50">
-          <td class="p-3 font-semibold text-blue-800">${v.plateNumber}</td>
+          <td class="p-3 font-semibold text-blue-800">
+            ${v.plateNumber}
+            ${statusText} <!-- ADDED STATUS HERE -->
+          </td>
           <td class="p-3">${v.model}</td>
           <td class="p-3">
-             <!-- Driver Assignment Dropdown -->
              <select onchange="assignDriver('${v._id}', this.value)" class="text-xs border rounded p-1 bg-white">
                 ${driverOptions}
              </select>
@@ -96,7 +103,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Assign driver to vehicle
 window.assignDriver = async (vehicleId, driverId) => {
   try {
-    // If driverId is empty string, send null to unassign
     await Api.put(`/vehicles/${vehicleId}`, { driver: driverId || null });
     alert('Driver assigned successfully!');
   } catch (e) {
@@ -177,7 +183,7 @@ function shareLocation(plateNumber) {
   });
 }
 
-// --- LOG FUEL FUNCTIONS (Now only declared ONCE) ---
+// --- LOG FUEL FUNCTIONS ---
 async function openFuelModal() {
   document.getElementById('fuelModal').classList.remove('hidden');
   document.getElementById('fuelModal').classList.add('flex');
@@ -213,7 +219,7 @@ document.getElementById('logFuelForm')?.addEventListener('submit', async (e) => 
     await Api.post('/vehicles/log-fuel', data);
     alert('Fuel logged successfully!');
     closeFuelModal();
-    window.location.reload(); // Reload to show new efficiency
+    window.location.reload(); 
   } catch (error) {
     alert(`❌ ${error.message}`);
     btn.innerText = 'Save Fuel Log';

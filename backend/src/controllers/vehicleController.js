@@ -67,12 +67,41 @@ exports.deleteVehicle = async (req, res) => {
 
 exports.updateLocation = async (req, res) => {
   try {
-    const { lat, lng } = req.body;
-    await Vehicle.findOneAndUpdate(
-      { plateNumber: req.body.plateNumber, owner: req.user._id },
-      { currentLat: lat, currentLng: lng }
-    );
-    res.json({ message: 'Location updated' });
+    const { lat, lng, plateNumber } = req.body;
+    
+    // Find the vehicle
+    const vehicle = await Vehicle.findOne({ plateNumber, owner: req.user.owner || req.user._id });
+    if (!vehicle) return res.status(404).json({ message: 'Vehicle not found' });
+
+    const now = new Date();
+    
+    // Check if the vehicle has moved significantly (approx 50 meters)
+    // Simple distance calculation
+    let hasMoved = true;
+    if (vehicle.currentLat && vehicle.currentLng) {
+      const latDiff = Math.abs(vehicle.currentLat - lat);
+      const lngDiff = Math.abs(vehicle.currentLng - lng);
+      // 0.0005 degrees is roughly 50 meters
+      if (latDiff < 0.0005 && lngDiff < 0.0005) {
+        hasMoved = false; 
+      }
+    }
+
+    if (hasMoved) {
+      // They moved, reset the idle timer
+      vehicle.idleSince = now;
+      vehicle.idleAlertSent = false;
+    } else {
+      // They haven't moved. Check if this is the first time we noticed.
+      if (!vehicle.idleSince) vehicle.idleSince = now;
+    }
+
+    vehicle.currentLat = lat;
+    vehicle.currentLng = lng;
+    vehicle.lastLocationUpdate = now;
+    await vehicle.save();
+
+    res.json({ message: 'Location updated', vehicle });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

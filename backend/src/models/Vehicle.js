@@ -17,7 +17,10 @@ const vehicleSchema = new mongoose.Schema(
     fuelLiters: { type: Number, default: 0 },
     fuelEfficiency: { type: Number, default: 0 },
     currentLat: { type: Number, default: null },
-    currentLng: { type: Number, default: null }
+    currentLng: { type: Number, default: null },
+    lastLocationUpdate: { type: Date, default: null },
+    idleAlertSent: { type: Boolean, default: false },
+    idleSince: { type: Date, default: null }
   },
   { timestamps: true }
 );

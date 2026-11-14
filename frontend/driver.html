@@ -51,10 +51,14 @@
       </div>
     </div>
 
-    <!-- Share Location Button -->
-    <button onclick="shareDriverLocation()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg transition-colors flex justify-center items-center gap-2">
-      📍 Share My Location with Office
-    </button>
+        <!-- Automatic Location Tracking Status -->
+    <div class="w-full bg-green-50 border border-green-200 text-green-700 font-bold py-4 rounded-xl shadow-sm flex justify-center items-center gap-2">
+      <span class="relative flex h-3 w-3">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+      </span>
+      Live Tracking Active
+    </div>
 
     <!-- Maintenance Alerts -->
     <div class="bg-white rounded-xl shadow p-5">
