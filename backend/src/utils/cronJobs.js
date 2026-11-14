@@ -1,34 +1,43 @@
 const cron = require('node-cron');
-const Vehicle = require('../models/Vehicle');
 const Maintenance = require('../models/Maintenance');
-const User = require('../models/User');
+const User = require('../models/User'); // Make sure this is imported
 const { sendMaintenanceAlert } = require('./emailSender');
 
-// Runs every day at 8:00 AM
+// Run every day at 8:00 AM
 cron.schedule('0 8 * * *', async () => {
   console.log('🤖 Running daily predictive maintenance check...');
   
   try {
-    // Find all tasks that are NOT completed and have a populated vehicle and owner
+    // 1. Find all maintenance tasks that are NOT completed
     const tasks = await Maintenance.find({ status: { $ne: 'completed' } })
       .populate('vehicle')
       .populate('owner'); 
 
     for (const task of tasks) {
+      // Skip if the task doesn't have a vehicle linked
       if (!task.vehicle || !task.owner) continue;
 
-      // Calculate remaining KM
+      // 2. Calculate remaining KM
       const remainingKm = task.dueAtKm - (task.vehicle.odometerKm || 0);
 
-      // If the truck is within 500km of needing service, send the alert
+      // 3. If remaining KM is less than 500 (and hasn't passed 0 yet), send email
       if (remainingKm <= 500 && remainingKm > 0) {
-        await sendMaintenanceAlert(
-          task.owner.email,
-          task.vehicle.plateNumber,
-          task.serviceType,
-          remainingKm,
-          task.owner.name
-        );
+        
+        // FETCH ALL ADMINS & MANAGERS FOR THIS COMPANY
+        const companyAdmins = await User.find({ 
+          companyId: task.owner.companyId,
+          role: { $in: ['admin', 'manager'] }
+        });
+
+        // Send the alert to everyone who needs to see it
+        for (const admin of companyAdmins) {
+          await sendMaintenanceAlert(
+            admin.email,
+            task.vehicle.plateNumber,
+            task.serviceType,
+            remainingKm
+          );
+        }
       }
     }
   } catch (err) {

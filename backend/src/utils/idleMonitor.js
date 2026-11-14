@@ -1,69 +1,78 @@
 const cron = require('node-cron');
 const Vehicle = require('../models/Vehicle');
-const User = require('../models/User');
+const User = require('../models/User'); // Make sure this is imported
 const { sendIdleAlert, sendOfflineAlert } = require('./emailSender');
 
-// Run every 2 minutes
 cron.schedule('*/2 * * * *', async () => {
   console.log('🔍 Monitoring fleet: Checking for Idle and Offline trucks...');
   
   try {
     const now = new Date();
 
-    // ==========================================
-    // LAYER 1: IDLE DETECTION (Stopped > 10 mins)
-    // ==========================================
+    // LAYER 1: IDLE DETECTION
     const idleVehicles = await Vehicle.find({ 
       idleSince: { $ne: null },
       idleAlertSent: false 
-    }).populate('owner');
+    }).populate('owner'); // We still populate owner to get their companyId
 
     for (const vehicle of idleVehicles) {
       const idleMinutes = (now - vehicle.idleSince) / 1000 / 60;
 
-      if (idleMinutes >= 10) {
-        if (vehicle.owner && vehicle.owner.email) {
+      if (idleMinutes >= 10 && vehicle.owner) {
+        
+        // FETCH ALL ADMINS & MANAGERS FOR THIS COMPANY
+        const companyAdmins = await User.find({ 
+          companyId: vehicle.owner.companyId,
+          role: { $in: ['admin', 'manager'] }
+        });
+
+        // Send email to each of them
+        for (const admin of companyAdmins) {
           await sendIdleAlert(
-            vehicle.owner.email,
-            vehicle.owner.name,
+            admin.email,
+            admin.name,
             vehicle.plateNumber,
             Math.round(idleMinutes),
             vehicle.currentLat,
             vehicle.currentLng
           );
         }
+
         vehicle.idleAlertSent = true;
         await vehicle.save();
       }
     }
 
-    // ==========================================
-    // LAYER 2: OFFLINE DETECTION (No ping > 5 mins)
-    // ==========================================
-    // Calculate the time 5 minutes ago
+    // LAYER 2: OFFLINE DETECTION
     const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
 
     const offlineVehicles = await Vehicle.find({
-      lastLocationUpdate: { $lt: fiveMinutesAgo }, // Last ping was over 5 mins ago
-      offlineAlertSent: false,                     // We haven't alerted yet
-      currentLat: { $ne: null },                   // They were tracking at some point
-      idleAlertSent: false                         // Don't double-alert if they are just idle
+      lastLocationUpdate: { $lt: fiveMinutesAgo },
+      offlineAlertSent: false,
+      currentLat: { $ne: null },
+      idleAlertSent: false
     }).populate('owner');
 
     for (const vehicle of offlineVehicles) {
       const offlineMinutes = Math.round((now - vehicle.lastLocationUpdate) / 1000 / 60);
 
-      if (vehicle.owner && vehicle.owner.email) {
-        console.log(`🚨 OFFLINE ALERT: ${vehicle.plateNumber} silent for ${offlineMinutes} mins.`);
-        await sendOfflineAlert(
-          vehicle.owner.email,
-          vehicle.owner.name,
-          vehicle.plateNumber,
-          offlineMinutes
-        );
+      if (vehicle.owner) {
+        // FETCH ALL ADMINS & MANAGERS FOR THIS COMPANY
+        const companyAdmins = await User.find({ 
+          companyId: vehicle.owner.companyId,
+          role: { $in: ['admin', 'manager'] }
+        });
+
+        for (const admin of companyAdmins) {
+          await sendOfflineAlert(
+            admin.email,
+            admin.name,
+            vehicle.plateNumber,
+            offlineMinutes
+          );
+        }
       }
 
-      // Mark as alerted so we don't spam them every 2 minutes
       vehicle.offlineAlertSent = true;
       await vehicle.save();
     }
