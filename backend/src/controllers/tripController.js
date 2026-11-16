@@ -68,7 +68,7 @@ exports.createTrip = async (req, res) => {
 
     // 8. Save the trip
     const trip = await Trip.create({
-      owner: req.user._id,
+      owner: req.user._id, companyId: req.user.companyId,
       vehicle,
       origin,
       destination,
@@ -92,7 +92,7 @@ exports.createTrip = async (req, res) => {
 exports.listTrips = async (req, res) => {
   try {
     // Admin sees only their trips. Driver sees trips for their assigned vehicle.
-    let query = { owner: req.user._id }; 
+    let query = { companyId: req.user.companyId }; 
     
     if (req.user.role === 'driver') {
       const vehicle = await Vehicle.findOne({ driver: req.user._id });

@@ -5,7 +5,7 @@ const { predictStatus, suggestNextServiceDate } = require('../utils/predictor');
 exports.listMaintenance = async (req, res) => {
   try {
     // Filter by the logged-in user's ID
-    const list = await Maintenance.find({ owner: req.user._id }) 
+    const list = await Maintenance.find({ companyId: req.user.companyId }) 
       .populate('vehicle', 'plateNumber model odometerKm')
       .populate('owner', 'name email'); 
     res.json(list);
@@ -19,7 +19,7 @@ exports.createMaintenance = async (req, res) => {
     // 🔥 CRITICAL FIX: We must attach the logged-in user's ID as the 'owner'
     const record = await Maintenance.create({
       ...req.body,
-      owner: req.user._id 
+      owner: req.user._id, companyId: req.user.companyId
     });
     res.status(201).json(record);
   } catch (err) {

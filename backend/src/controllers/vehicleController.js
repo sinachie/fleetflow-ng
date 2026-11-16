@@ -10,7 +10,7 @@ exports.createVehicle = async (req, res) => {
     if (sub.plan === 'starter' && vehicleCount >= 5) return res.status(403).json({ message: 'Starter plan limited to 5 vehicles.' });
     if (sub.plan === 'professional' && vehicleCount >= 30) return res.status(403).json({ message: 'Professional plan limited to 30 vehicles.' });
 
-    const vehicle = await Vehicle.create({ ...req.body, owner: req.user._id });
+    const vehicle = await Vehicle.create({ ...req.body, owner: req.user._id, companyId: req.user.companyId });
     res.status(201).json(vehicle);
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -23,7 +23,7 @@ exports.listVehicles = async (req, res) => {
     
     // Admins and Managers only see vehicles they own
     if (req.user.role === 'admin' || req.user.role === 'manager') {
-      query = { owner: req.user._id };
+      query = { companyId: req.user.companyId };
     } 
     // Drivers only see the vehicle assigned to them
     else if (req.user.role === 'driver') {

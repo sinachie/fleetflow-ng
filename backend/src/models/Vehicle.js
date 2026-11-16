@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const vehicleSchema = new mongoose.Schema(
   {
+    companyId: { type: String, required: true },
     owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     plateNumber: { type: String, required: true, unique: true },
     model: { type: String, required: true },
