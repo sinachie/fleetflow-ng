@@ -8,13 +8,12 @@
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Google tag (gtag.js) -->
+  <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-T1R97VHVYT"></script>
   <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-T1R97VHVYT');
   </script>
   <script src="https://js.paystack.co/v1/inline.js"></script>
@@ -30,28 +29,22 @@
     </div>
 
     <form id="auth-form" class="space-y-4">
-      <!-- Name field (hidden by default, shown for registration) -->
       <div id="name-group" class="hidden">
         <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Full Name</label>
         <input type="text" id="auth-name" class="w-full border rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Ifesinachi Nduka" />
       </div>
-
-      <!-- Company field (hidden by default, shown for registration) -->
       <div id="company-group" class="hidden">
         <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Company Name</label>
         <input type="text" id="auth-company" class="w-full border rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="FleetFlow Logistics" />
       </div>
-
       <div>
         <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Email Address</label>
         <input type="email" id="auth-email" required class="w-full border rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="admin@fleetflow.com.ng" />
       </div>
-
       <div>
         <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Password</label>
         <input type="password" id="auth-password" required class="w-full border rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="••••••••" />
       </div>
-
       <button type="submit" id="auth-submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors mt-2">
         Log In
       </button>
@@ -63,6 +56,7 @@
     </p>
   </div>
 </div>
+
   <!-- Header -->
   <header class="bg-gradient-to-r from-blue-900 to-blue-600 text-white shadow-md">
   <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -74,11 +68,10 @@
       </div>
     </div>
 
-    <!-- Mobile Menu Button (Visible only on small screens) -->
+    <!-- Mobile Menu Button (Visible on small & landscape screens) -->
     <button id="mobile-menu-btn" class="lg:hidden text-white focus:outline-none">
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
     </button>
-
 
     <!-- Desktop Navigation -->
     <nav class="hidden lg:flex gap-1 text-sm items-center">
@@ -110,11 +103,14 @@
     <button class="nav-btn text-left w-full" data-page="subscription">Subscription</button>
     <button class="nav-btn text-left w-full" data-page="billing">Billing</button>
     <button id="nav-enterprise-mobile" class="nav-btn text-left w-full hidden" data-page="enterprise">Enterprise</button>
+    <button onclick="logoutUser()" class="text-left w-full text-red-400 font-bold mt-4">Log Out</button>
   </div>
 </header>
 
-  <!-- Main -->
+  <!-- Main Content -->
   <main class="max-w-7xl mx-auto px-4 py-6" id="main">
+    
+    <!-- DASHBOARD PAGE -->
     <div id="page-dashboard" class="page active">
       <h2 class="text-xl font-bold text-blue-900 mb-4">Dashboard</h2>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6" id="stats"></div>
@@ -124,11 +120,10 @@
       </div>
     </div>
 
+    <!-- TRIPS PAGE -->
     <div id="page-trips" class="page hidden">
       <h2 class="text-xl font-bold text-blue-900 mb-4">Schedule a Trip</h2>
-      
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Form -->
         <div class="bg-white rounded-xl shadow p-6">
           <form id="tripForm" class="space-y-4">
             <div>
@@ -137,27 +132,22 @@
                 <option value="">Loading vehicles...</option>
               </select>
             </div>
-            
             <div>
               <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Origin City</label>
               <input type="text" id="t-origin" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. Lagos">
             </div>
-            
             <div>
               <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Destination City</label>
               <input type="text" id="t-destination" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. Kano">
             </div>
-            
             <div>
               <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Scheduled Date</label>
               <input type="date" id="t-date" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
             </div>
-
              <div class="flex items-center gap-2 mt-2">
               <input type="checkbox" id="t-round-trip" class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
               <label for="t-round-trip" class="text-sm font-semibold text-slate-700">Round Trip (Go & Come)</label>
             </div> 
-            
             <div>
               <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Fuel Type</label>
               <select id="t-fuel-type" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
@@ -167,14 +157,11 @@
                 <option value="CNG">CNG (Gas) - Converted Vehicle</option>
               </select>
             </div>
-
             <button type="submit" id="saveTripBtn" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition-colors">
               Calculate & Schedule Route
             </button>
           </form>
         </div>
-
-        <!-- Results -->
         <div class="bg-white rounded-xl shadow p-6">
           <h3 class="font-bold text-slate-800 mb-4 border-b pb-2">Trip Summary</h3>
           <div id="tripResults" class="text-sm space-y-3">
@@ -182,18 +169,17 @@
           </div>
         </div>
       </div>
-
-      <!-- Recent Trips List -->
       <div class="bg-white rounded-xl shadow p-6 mt-6">
         <h3 class="font-bold text-slate-800 mb-4 border-b pb-2">Scheduled Trips</h3>
         <div id="tripsList" class="space-y-2 text-sm">Loading...</div>
       </div>
     </div>
 
+    <!-- VEHICLES PAGE -->
     <div id="page-vehicles" class="page hidden">
-      <div class="flex justify-between items-center mb-4">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-2">
         <h2 class="text-xl font-bold text-blue-900">Vehicles</h2>
-        <div class="flex gap-2"> <!-- Add this wrapper -->
+        <div class="flex flex-wrap gap-2"> 
           <button onclick="exportVehiclesToCSV()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
             Export CSV
           </button>
@@ -206,9 +192,9 @@
         </div>
       </div>
       
-        <div class="bg-white rounded-xl shadow overflow-hidden">
+      <div class="bg-white rounded-xl shadow overflow-hidden">
         <div class="overflow-x-auto">
-          <table class="w-full text-sm min-w-[600px]">
+          <table class="w-full text-sm min-w-[700px]">
             <thead class="bg-blue-50 text-blue-800 text-xs uppercase">
               <tr>
                 <th class="p-3 text-left">Plate</th>
@@ -224,78 +210,13 @@
           </table>
         </div>
       </div>
-
-    <!-- ADD VEHICLE MODAL -->
-    <div id="vehicleModal" class="fixed inset-0 bg-slate-900/50 hidden items-center justify-center z-50 px-4">
-      <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6">
-        <h3 class="text-lg font-bold text-blue-900 mb-4">Add New Vehicle</h3>
-        <form id="addVehicleForm" class="space-y-3">
-          <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase">Plate Number</label>
-            <input type="text" id="v-plate" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. NG-1234">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase">Model</label>
-            <input type="text" id="v-model" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. Mercedes Actros">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase">Status</label>
-            <select id="v-status" class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="active">Active</option>
-              <option value="idle">Idle</option>
-              <option value="maintenance">Maintenance</option>
-              <option value="critical">Critical</option>
-            </select>
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 uppercase">Odometer (km)</label>
-              <input type="number" id="v-odometer" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="0">
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 uppercase">Fuel (Liters)</label>
-              <input type="number" id="v-fuel" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="0">
-            </div>
-          </div>
-          <div class="flex gap-2 mt-4">
-            <button type="submit" id="saveVehicleBtn" class="flex-1 bg-blue-600 text-white py-2 rounded-lg text-sm font-semibold hover:bg-blue-700">Save Vehicle</button>
-            <button type="button" onclick="closeVehicleModal()" class="flex-1 bg-slate-200 text-slate-700 py-2 rounded-lg text-sm font-semibold hover:bg-slate-300">Cancel</button>
-          </div>
-        </form>
-      </div>
     </div>
 
-    <!-- LOG FUEL MODAL (Moved outside the vehicle modal) -->
-    <div id="fuelModal" class="fixed inset-0 bg-slate-900/50 hidden items-center justify-center z-50 px-4">
-      <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6">
-        <h3 class="text-lg font-bold text-blue-900 mb-4">Log Fuel Purchase</h3>
-        <form id="logFuelForm" class="space-y-3">
-          <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase">Select Vehicle</label>
-            <select id="f-vehicle" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
-              <!-- Options populated by JS -->
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase">Litres Pumped</label>
-            <input type="number" id="f-liters" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. 150">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase">Current Odometer (km)</label>
-            <input type="number" id="f-odometer" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. 45200">
-          </div>
-          <div class="flex gap-2 mt-4">
-            <button type="submit" class="flex-1 bg-amber-500 text-white py-2 rounded-lg text-sm font-semibold hover:bg-amber-600">Save Fuel Log</button>
-            <button type="button" onclick="closeFuelModal()" class="flex-1 bg-slate-200 text-slate-700 py-2 rounded-lg text-sm font-semibold hover:bg-slate-300">Cancel</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
+    <!-- MAINTENANCE PAGE -->
     <div id="page-maintenance" class="page hidden">
-      <div class="flex justify-between items-center mb-4">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-2">
         <h2 class="text-xl font-bold text-blue-900">Maintenance Tracker</h2>
-        <div class="flex gap-2"> 
+        <div class="flex flex-wrap gap-2"> 
           <button onclick="exportMaintenanceToCSV()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
             Export CSV
           </button>
@@ -304,39 +225,12 @@
           </button>
         </div>
       </div>
-
       <div class="bg-white rounded-xl shadow p-5">
         <div id="maintenanceList" class="space-y-2 text-sm">Loading…</div>
       </div>
     </div>
 
-    <!-- ADD MAINTENANCE MODAL -->
-    <div id="maintenanceModal" class="fixed inset-0 bg-slate-900/50 hidden items-center justify-center z-50 px-4">
-      <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6">
-        <h3 class="text-lg font-bold text-blue-900 mb-4">Log Maintenance</h3>
-        <form id="addMaintenanceForm" class="space-y-3">
-          <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase">Vehicle</label>
-            <select id="m-vehicle" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
-               <option value="">Loading vehicles...</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase">Service Type</label>
-            <input type="text" id="m-service" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. Engine Oil">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase">Due At (KM)</label>
-            <input type="number" id="m-km" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. 15000">
-          </div>
-          <div class="flex gap-2 mt-4">
-            <button type="submit" id="saveMaintenanceBtn" class="flex-1 bg-blue-600 text-white py-2 rounded-lg text-sm font-semibold hover:bg-blue-700">Save Record</button>
-            <button type="button" onclick="closeMaintenanceModal()" class="flex-1 bg-slate-200 text-slate-700 py-2 rounded-lg text-sm font-semibold hover:bg-slate-300">Cancel</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
+    <!-- COMMS PAGE -->
     <div id="page-comms" class="page hidden">
       <h2 class="text-xl font-bold text-blue-900 mb-4">Driver ↔ Office Comms</h2>
       <div class="bg-white rounded-xl shadow p-4 flex flex-col h-[480px]">
@@ -348,26 +242,27 @@
       </div>
     </div>
 
+    <!-- ELD PAGE -->
     <div id="page-eld" class="page hidden">
       <h2 class="text-xl font-bold text-blue-900 mb-4">ELD Data Analyzer</h2>
       <div id="eldStats" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4"></div>
-      
       <div class="bg-white rounded-xl shadow p-4 mb-4">
         <h3 class="font-bold text-blue-900 mb-3">Live Fleet Map</h3>
         <div id="fleetMap" class="w-full h-80 rounded-lg border border-slate-200 z-0"></div>
       </div>
-
       <div class="bg-white rounded-xl shadow p-5">
         <h3 class="font-bold text-blue-900 mb-3">Route Optimization</h3>
         <div id="routes" class="space-y-2 text-sm">Loading…</div>
       </div>
     </div>
 
+    <!-- SUBSCRIPTION PAGE -->
     <div id="page-subscription" class="page hidden">
       <h2 class="text-xl font-bold text-blue-900 mb-4">Subscription</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="plans"></div>
     </div>
 
+    <!-- BILLING PAGE -->
     <div id="page-billing" class="page hidden">
       <h2 class="text-xl font-bold text-blue-900 mb-4">Billing & Account Management</h2>
       <div id="billingContent" class="bg-white rounded-xl shadow p-6">
@@ -375,27 +270,25 @@
       </div>
     </div>
 
+    <!-- ENTERPRISE PAGE -->
     <div id="page-enterprise" class="page hidden">
       <h2 class="text-xl font-bold text-blue-900 mb-4">Enterprise Dashboard</h2>
-      
       <div class="bg-white rounded-xl shadow p-6 mb-6">
         <h3 class="font-bold text-slate-800 mb-2">🔑 API Access</h3>
         <p class="text-sm text-slate-500 mb-4">Use this key to connect your custom software to FleetFlow NG.</p>
-        <div class="flex gap-2">
+        <div class="flex flex-col sm:flex-row gap-2">
           <input type="text" id="apiKeyDisplay" readonly class="flex-1 border rounded-lg px-3 py-2 text-sm bg-slate-50 outline-none" placeholder="No API Key generated yet.">
-          <button onclick="generateApiKey()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700">Generate Key</button>
+          <button onclick="generateApiKey()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 whitespace-nowrap">Generate Key</button>
         </div>
       </div>
-
       <div class="bg-white rounded-xl shadow p-6 mb-6">
         <h3 class="font-bold text-slate-800 mb-2">🔗 ERP Webhook Integration</h3>
         <p class="text-sm text-slate-500 mb-4">We will send a POST request here whenever a new vehicle is added.</p>
-        <div class="flex gap-2">
+        <div class="flex flex-col sm:flex-row gap-2">
           <input type="url" id="erpUrlInput" class="flex-1 border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="https://your-erp-system.com/api/webhook">
-          <button onclick="saveErpUrl()" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-700">Save URL</button>
+          <button onclick="saveErpUrl()" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-700 whitespace-nowrap">Save URL</button>
         </div>
       </div>
-
       <div class="bg-blue-900 text-white rounded-xl p-6 shadow-lg">
         <h3 class="text-lg font-bold mb-2">🌟 24/7 Priority Support</h3>
         <p class="text-sm text-blue-200 mb-4">Your dedicated account manager is always available.</p>
@@ -406,70 +299,165 @@
             <p class="text-xs text-blue-300">Dedicated Account Manager</p>
           </div>
         </div>
-        <div class="flex gap-2">
+        <div class="flex flex-col sm:flex-row gap-2">
           <a href="tel:+2348037937911" class="flex-1 bg-white text-blue-900 text-center py-2 rounded-lg text-sm font-bold hover:bg-blue-50">📞 Call 24/7</a>
           <a href="https://wa.me/2348037937911" class="flex-1 bg-green-500 text-white text-center py-2 rounded-lg text-sm font-bold hover:bg-green-600 transition-colors">💬 WhatsApp</a>
-          <a href="mailto:fleetflowng@gmail.com" class="flex-1 bg-blue-600 text-white text-center py-2 rounded-lg text-sm font-bold hover:bg-blue-700">✉️ Email Support</a>
+          <a href="mailto:fleetflowng@gmail.com" class="flex-1 bg-blue-600 text-white text-center py-2 rounded-lg text-sm font-bold hover:bg-blue-700">✉️ Email</a>
         </div>
       </div>
     </div>
 
+    <!-- TEAM PAGE (Moved to correct place) -->
     <div id="page-team" class="page hidden">
-  <div class="flex justify-between items-center mb-4">
-    <h2 class="text-xl font-bold text-blue-900">Team Management</h2>
-    <button onclick="openTeamModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
-      + Add Team Member
-    </button>
-  </div>
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-2">
+        <h2 class="text-xl font-bold text-blue-900">Team Management</h2>
+        <button onclick="openTeamModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+          + Add Team Member
+        </button>
+      </div>
+      <div class="bg-white rounded-xl shadow overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm min-w-[500px]">
+            <thead class="bg-blue-50 text-blue-800 text-xs uppercase">
+              <tr>
+                <th class="p-3 text-left">Name</th>
+                <th class="p-3 text-left">Email</th>
+                <th class="p-3 text-left">Role</th>
+              </tr>
+            </thead>
+            <tbody id="teamRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODALS (All placed outside the main pages) -->
   
-    <div class="bg-white rounded-xl shadow overflow-hidden">
-    <div class="overflow-x-auto">
-      <table class="w-full text-sm min-w-[500px]">
-        <thead class="bg-blue-50 text-blue-800 text-xs uppercase">
-          <tr>
-            <th class="p-3 text-left">Name</th>
-            <th class="p-3 text-left">Email</th>
-            <th class="p-3 text-left">Role</th>
-          </tr>
-        </thead>
-        <tbody id="teamRows"></tbody>
-      </table>
+  <!-- ADD VEHICLE MODAL -->
+  <div id="vehicleModal" class="fixed inset-0 bg-slate-900/50 hidden items-center justify-center z-50 px-4">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6">
+      <h3 class="text-lg font-bold text-blue-900 mb-4">Add New Vehicle</h3>
+      <form id="addVehicleForm" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase">Plate Number</label>
+          <input type="text" id="v-plate" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. NG-1234">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase">Model</label>
+          <input type="text" id="v-model" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. Mercedes Actros">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase">Status</label>
+          <select id="v-status" class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="active">Active</option>
+            <option value="idle">Idle</option>
+            <option value="maintenance">Maintenance</option>
+            <option value="critical">Critical</option>
+          </select>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase">Odometer (km)</label>
+            <input type="number" id="v-odometer" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="0">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase">Fuel (Liters)</label>
+            <input type="number" id="v-fuel" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="0">
+          </div>
+        </div>
+        <div class="flex gap-2 mt-4">
+          <button type="submit" id="saveVehicleBtn" class="flex-1 bg-blue-600 text-white py-2 rounded-lg text-sm font-semibold hover:bg-blue-700">Save Vehicle</button>
+          <button type="button" onclick="closeVehicleModal()" class="flex-1 bg-slate-200 text-slate-700 py-2 rounded-lg text-sm font-semibold hover:bg-slate-300">Cancel</button>
+        </div>
+      </form>
     </div>
   </div>
 
-<!-- Add Team Modal -->
-<div id="teamModal" class="fixed inset-0 bg-slate-900/50 hidden items-center justify-center z-50 px-4">
-  <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6">
-    <h3 class="text-lg font-bold text-blue-900 mb-4">Add Team Member</h3>
-    <form id="addTeamForm" class="space-y-3">
-      <div>
-        <label class="block text-xs font-semibold text-slate-500 uppercase">Full Name</label>
-        <input type="text" id="tm-name" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
-      </div>
-      <div>
-        <label class="block text-xs font-semibold text-slate-500 uppercase">Email</label>
-        <input type="email" id="tm-email" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
-      </div>
-      <div>
-        <label class="block text-xs font-semibold text-slate-500 uppercase">Temporary Password</label>
-        <input type="text" id="tm-password" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" value="Fleet1234">
-      </div>
-      <div>
-        <label class="block text-xs font-semibold text-slate-500 uppercase">Role</label>
-        <select id="tm-role" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
-          <option value="driver">Driver</option>
-          <option value="manager">Manager</option>
-        </select>
-      </div>
-      <div class="flex gap-2 mt-4">
-        <button type="submit" id="saveTeamBtn" class="flex-1 bg-blue-600 text-white py-2 rounded-lg text-sm font-semibold hover:bg-blue-700">Create User</button>
-        <button type="button" onclick="closeTeamModal()" class="flex-1 bg-slate-200 text-slate-700 py-2 rounded-lg text-sm font-semibold hover:bg-slate-300">Cancel</button>
-      </div>
-    </form>
+  <!-- LOG FUEL MODAL -->
+  <div id="fuelModal" class="fixed inset-0 bg-slate-900/50 hidden items-center justify-center z-50 px-4">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6">
+      <h3 class="text-lg font-bold text-blue-900 mb-4">Log Fuel Purchase</h3>
+      <form id="logFuelForm" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase">Select Vehicle</label>
+          <select id="f-vehicle" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500"></select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase">Litres Pumped</label>
+          <input type="number" id="f-liters" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. 150">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase">Current Odometer (km)</label>
+          <input type="number" id="f-odometer" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. 45200">
+        </div>
+        <div class="flex gap-2 mt-4">
+          <button type="submit" class="flex-1 bg-amber-500 text-white py-2 rounded-lg text-sm font-semibold hover:bg-amber-600">Save Fuel Log</button>
+          <button type="button" onclick="closeFuelModal()" class="flex-1 bg-slate-200 text-slate-700 py-2 rounded-lg text-sm font-semibold hover:bg-slate-300">Cancel</button>
+        </div>
+      </form>
+    </div>
   </div>
-</div>
 
-  </main>
+  <!-- ADD MAINTENANCE MODAL -->
+  <div id="maintenanceModal" class="fixed inset-0 bg-slate-900/50 hidden items-center justify-center z-50 px-4">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6">
+      <h3 class="text-lg font-bold text-blue-900 mb-4">Log Maintenance</h3>
+      <form id="addMaintenanceForm" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase">Vehicle</label>
+          <select id="m-vehicle" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
+             <option value="">Loading vehicles...</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase">Service Type</label>
+          <input type="text" id="m-service" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. Engine Oil">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase">Due At (KM)</label>
+          <input type="number" id="m-km" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. 15000">
+        </div>
+        <div class="flex gap-2 mt-4">
+          <button type="submit" id="saveMaintenanceBtn" class="flex-1 bg-blue-600 text-white py-2 rounded-lg text-sm font-semibold hover:bg-blue-700">Save Record</button>
+          <button type="button" onclick="closeMaintenanceModal()" class="flex-1 bg-slate-200 text-slate-700 py-2 rounded-lg text-sm font-semibold hover:bg-slate-300">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ADD TEAM MODAL -->
+  <div id="teamModal" class="fixed inset-0 bg-slate-900/50 hidden items-center justify-center z-50 px-4">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6">
+      <h3 class="text-lg font-bold text-blue-900 mb-4">Add Team Member</h3>
+      <form id="addTeamForm" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase">Full Name</label>
+          <input type="text" id="tm-name" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase">Email</label>
+          <input type="email" id="tm-email" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase">Temporary Password</label>
+          <input type="text" id="tm-password" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" value="Fleet1234">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase">Role</label>
+          <select id="tm-role" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="driver">Driver</option>
+            <option value="manager">Manager</option>
+          </select>
+        </div>
+        <div class="flex gap-2 mt-4">
+          <button type="submit" id="saveTeamBtn" class="flex-1 bg-blue-600 text-white py-2 rounded-lg text-sm font-semibold hover:bg-blue-700">Create User</button>
+          <button type="button" onclick="closeTeamModal()" class="flex-1 bg-slate-200 text-slate-700 py-2 rounded-lg text-sm font-semibold hover:bg-slate-300">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <footer class="text-center text-xs text-slate-500 py-6 border-t mt-10">
     FleetFlow NG • <a href="mailto:fleetflowng@gmail.com" class="hover:text-blue-600">fleetflowng@gmail.com</a> • Developed by <strong>Ifesinachi John Nduka</strong> • © 2026 All Rights Reserved
