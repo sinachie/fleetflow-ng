@@ -75,12 +75,13 @@
     </div>
 
     <!-- Mobile Menu Button (Visible only on small screens) -->
-    <button id="mobile-menu-btn" class="md:hidden text-white focus:outline-none">
+    <button id="mobile-menu-btn" class="lg:hidden text-white focus:outline-none">
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
     </button>
 
+
     <!-- Desktop Navigation -->
-    <nav class="hidden md:flex gap-1 text-sm">
+    <nav class="hidden lg:flex gap-1 text-sm items-center">
       <button class="nav-btn active" data-page="dashboard">Dashboard</button>
       <button class="nav-btn" data-page="team">Team</button>
       <button class="nav-btn" data-page="trips">Schedule Trip</button>
@@ -98,7 +99,7 @@
   </div>
 
   <!-- Mobile Navigation Dropdown -->
-  <div id="mobile-menu" class="hidden md:hidden bg-blue-800 flex-col px-4 pb-4 space-y-2">
+  <div id="mobile-menu" class="hidden lg:hidden bg-blue-800 flex-col px-4 pb-4 space-y-2">
     <button class="nav-btn text-left w-full" data-page="dashboard">Dashboard</button>
     <button class="nav-btn text-left w-full" data-page="team">Team</button>
     <button class="nav-btn text-left w-full" data-page="trips">Schedule Trip</button>
@@ -205,23 +206,24 @@
         </div>
       </div>
       
-      <div class="bg-white rounded-xl shadow overflow-hidden">
-        <table class="w-full text-sm">
-          <thead class="bg-blue-50 text-blue-800 text-xs uppercase">
-            <tr>
-              <th class="p-3 text-left">Plate</th>
-              <th class="p-3 text-left">Model</th>
-              <th class="p-3 text-left">Driver</th>
-              <th class="p-3 text-left">Status</th>
-              <th class="p-3 text-left">Odometer</th>
-              <th class="p-3 text-left">Fuel</th>
-              <th class="p-3 text-left">Map</th> 
-            </tr>
-          </thead>
-          <tbody id="vehicleRows"></tbody>
-        </table>
+        <div class="bg-white rounded-xl shadow overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm min-w-[600px]">
+            <thead class="bg-blue-50 text-blue-800 text-xs uppercase">
+              <tr>
+                <th class="p-3 text-left">Plate</th>
+                <th class="p-3 text-left">Model</th>
+                <th class="p-3 text-left">Driver</th>
+                <th class="p-3 text-left">Status</th>
+                <th class="p-3 text-left">Odometer</th>
+                <th class="p-3 text-left">Fuel</th>
+                <th class="p-3 text-left">Map</th> 
+              </tr>
+            </thead>
+            <tbody id="vehicleRows"></tbody>
+          </table>
+        </div>
       </div>
-    </div>
 
     <!-- ADD VEHICLE MODAL -->
     <div id="vehicleModal" class="fixed inset-0 bg-slate-900/50 hidden items-center justify-center z-50 px-4">
@@ -420,19 +422,20 @@
     </button>
   </div>
   
-  <div class="bg-white rounded-xl shadow overflow-hidden">
-    <table class="w-full text-sm">
-      <thead class="bg-blue-50 text-blue-800 text-xs uppercase">
-        <tr>
-          <th class="p-3 text-left">Name</th>
-          <th class="p-3 text-left">Email</th>
-          <th class="p-3 text-left">Role</th>
-        </tr>
-      </thead>
-      <tbody id="teamRows"></tbody>
-    </table>
+    <div class="bg-white rounded-xl shadow overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm min-w-[500px]">
+        <thead class="bg-blue-50 text-blue-800 text-xs uppercase">
+          <tr>
+            <th class="p-3 text-left">Name</th>
+            <th class="p-3 text-left">Email</th>
+            <th class="p-3 text-left">Role</th>
+          </tr>
+        </thead>
+        <tbody id="teamRows"></tbody>
+      </table>
+    </div>
   </div>
-</div>
 
 <!-- Add Team Modal -->
 <div id="teamModal" class="fixed inset-0 bg-slate-900/50 hidden items-center justify-center z-50 px-4">

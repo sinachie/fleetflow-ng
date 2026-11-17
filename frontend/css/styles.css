@@ -62,10 +62,18 @@ body::after {
 /* Leaflet Map Container */
 #fleetMap {
   width: 100%;
-  height: 500px;
-  min-height: 500px;
+  height: 350px; /* Reduced from 500px for mobile */
+  min-height: 350px;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   z-index: 1;
-  background-color: #f8f9fa; 
+  background-color: #f8f9fa;
+}
+
+/* On desktop, make it taller */
+@media (min-width: 768px) {
+  #fleetMap {
+    height: 500px;
+    min-height: 500px;
+  }
 }
