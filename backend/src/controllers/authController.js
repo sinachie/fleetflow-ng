@@ -122,3 +122,28 @@ exports.createTeamMember = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+exports.changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    // 1. Find the logged-in user
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    // 2. Verify the current password is correct
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Incorrect current password.' });
+    }
+
+    // 3. Hash the new password and save
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedNewPassword;
+    await user.save();
+
+    res.json({ message: 'Password updated successfully!' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

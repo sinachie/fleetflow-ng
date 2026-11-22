@@ -7,7 +7,8 @@ const {
   generateApiKey, 
   updateErpUrl, 
   getTeam, 
-  createTeamMember 
+  createTeamMember,
+  changePassword 
 } = require('../controllers/authController');
 const { protect, authorize } = require('../middleware/auth');
 const { checkPlan } = require('../middleware/checkplan');
@@ -23,5 +24,8 @@ router.put('/erp-url', protect, checkPlan(['enterprise']), updateErpUrl);
 // Team Routes (Only Admins can manage team)
 router.get('/team', protect, authorize('admin'), getTeam);
 router.post('/team', protect, authorize('admin'), createTeamMember);
+
+// Add this route (protected so only logged-in users can change their own password)
+router.put('/change-password', protect, changePassword);
 
 module.exports = router;

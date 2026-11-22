@@ -21,13 +21,15 @@
 <body class="bg-slate-50 font-sans h-screen flex flex-col">
 
   <!-- Driver Header -->
-  <header class="bg-gradient-to-r from-blue-900 to-blue-600 text-white shadow-md p-4 flex justify-between items-center">
+    <header class="bg-gradient-to-r from-blue-900 to-blue-600 text-white shadow-md p-4 flex justify-between items-center">
     <div>
       <h1 class="font-bold text-lg leading-tight">Driver Portal</h1>
-      <p class="text-xs text-blue-200 mt-1">Need help? <a href="mailto:fleetflowng@gmail.com" class="text-white underline hover:text-blue-100">Contact Support</a></p>
       <p class="text-[10px] text-blue-200" id="driver-truck-name">Loading truck...</p>
     </div>
-    <button onclick="logoutDriver()" class="text-xs bg-red-500 hover:bg-red-600 px-3 py-1.5 rounded-lg font-semibold transition-colors">Log Out</button>
+    <div class="flex gap-2">
+      <button onclick="openPasswordModal()" class="text-xs bg-slate-700 hover:bg-slate-800 px-3 py-1.5 rounded-lg font-semibold transition-colors">Change Password</button>
+      <button onclick="logoutDriver()" class="text-xs bg-red-500 hover:bg-red-600 px-3 py-1.5 rounded-lg font-semibold transition-colors">Log Out</button>
+    </div>
   </header>
 
     <!-- Driver Content -->
@@ -94,6 +96,43 @@
     </div>
 
   </main>
+
+  <!-- CHANGE PASSWORD MODAL -->
+<div id="passwordModal" class="fixed inset-0 bg-slate-900/50 hidden items-center justify-center z-50 px-4">
+  <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm p-6">
+    <h3 class="text-lg font-bold text-blue-900 mb-4">Change Password</h3>
+    
+    <form id="driverPasswordForm" class="space-y-4">
+      <!-- Current Password -->
+      <div>
+        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Current Password</label>
+        <div class="relative">
+          <!-- MATCHED ID TO d-current-password -->
+          <input type="password" id="d-current-password" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 pr-10">
+          <button type="button" onclick="togglePassword('d-current-password', this)" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- New Password -->
+      <div>
+        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">New Password</label>
+        <div class="relative">
+          <input type="password" id="d-new-password" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 pr-10">
+          <button type="button" onclick="togglePassword('d-new-password', this)" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="flex gap-2 mt-6">
+        <button type="submit" class="flex-1 bg-blue-600 text-white py-2 rounded-lg text-sm font-semibold hover:bg-blue-700">Update</button>
+        <button type="button" onclick="closePasswordModal()" class="flex-1 bg-slate-200 text-slate-700 py-2 rounded-lg text-sm font-semibold hover:bg-slate-300">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
 
   <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
   <script src="js/api.js"></script>
